@@ -93,6 +93,8 @@ model_data <- merged_data %>%
 # Fjern ubrugte kolonner
 model_data <- model_data %>%
   select(
+    -kundetid_dage,
+    -age,
     -order_date,
     -birthdate,
     -usr_created,
@@ -102,6 +104,10 @@ model_data <- model_data %>%
 glimpse(model_data)
 summary(model_data$age)
 colSums(is.na(model_data))
+
+model_data %>%
+  count(churn) %>%
+  mutate(prop = n / sum(n))
 
 # Gem renset data
 saveRDS(model_data, "data/model_data.rds")
