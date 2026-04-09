@@ -5,7 +5,7 @@ cancellation <- read.csv("data/cancellation.csv")
 subscription <- read.csv("data/subscription_v2.csv", sep = ";")
 behavior <- read.csv("data/behavior.csv")
 
-# Fjern dubletter
+# Behold kun 1 ID per row
 cancellation <- cancellation %>% distinct(pseudo_id, .keep_all = TRUE)
 subscription <- subscription %>% distinct(pseudo_id, .keep_all = TRUE)
 
@@ -21,15 +21,34 @@ merged_data <- subscription %>%
     expiration_date = ymd(expiration_date)
   ) %>%
   
-  # Definer churn efter kampagneperioden
+  # 1️⃣ Churn (did NOT continue after campaign)
   mutate(
-    churn = if_else(
-      !is.na(subscription_cancel_date) &
-        subscription_cancel_date < as.Date("2999-01-01") &
-        subscription_cancel_date > last_campaign_day,
-      1, 0
+    churn = case_when(
+      is.na(expiration_date) ~ 0,
+      expiration_date <= last_campaign_day ~ 1,
+      expiration_date > last_campaign_day ~ 0
+    )
+  ) %>%
+  
+  # 2️⃣ Continued subscription (inverse of churn)
+  mutate(
+    continued_subscription = 1 - churn
+  ) %>%
+  
+  # 3️⃣ Early churn (continued BUT churned shortly after)
+  mutate(
+    early_churn = case_when(
+      continued_subscription == 1 & !is.na(expiration_date) &
+        expiration_date <= last_campaign_day + 30 ~ 1,            #sætter early_churn til 1 hvis expiration under 30 dage 
+      continued_subscription == 1 ~ 0,                #sætter early churn til 0 hvis de fortsætter abonnering efter 30 dage
+      continued_subscription == 0 ~ 0                 #sætter early churn til 0 hvis de slet ikke fortsatte abonnering
     )
   )
+
+# Churn distribution
+merged_data %>%
+  count(churn) %>%
+  mutate(prop = n / sum(n))
 
 # Feature engineering / rensning
 model_data <- merged_data %>%
@@ -97,6 +116,14 @@ colSums(is.na(model_data))
 # Churn distribution
 model_data %>%
   count(churn) %>%
+  mutate(prop = n / sum(n))
+
+model_data %>%
+  count(continued_subscription) %>%
+  mutate(prop = n / sum(n))
+
+model_data %>%
+  count(early_churn) %>%
   mutate(prop = n / sum(n))
 
 # Gem renset data

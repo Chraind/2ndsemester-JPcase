@@ -17,7 +17,9 @@ model_data_clean <- model_data %>%
     -expiration_date,
     -order_trackertag,
     -first_campaign_day,
-    -last_campaign_day
+    -last_campaign_day,
+    -continued_subscription,
+    -early_churn
   ) %>%
   mutate(churn = factor(churn, levels = c("0", "1")))
 
