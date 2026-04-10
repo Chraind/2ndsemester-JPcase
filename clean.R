@@ -1,4 +1,4 @@
-pacman::p_load(tidyverse, lubridate, forcats)
+pacman::p_load(tidyverse, lubridate, forcats, readr)
 
 # Indlæs data
 cancellation <- read.csv("data/cancellation.csv")
@@ -6,6 +6,7 @@ subscription <- read.csv("data/subscription_v2.csv", sep = ";")
 behavior <- read.csv("data/behavior.csv")
 
 # Behold kun 1 ID per row
+# TODO: behold kun den aktive ID (year 3000), i stedet for bare "den første"
 cancellation <- cancellation %>% distinct(pseudo_id, .keep_all = TRUE)
 subscription <- subscription %>% distinct(pseudo_id, .keep_all = TRUE)
 
@@ -22,20 +23,24 @@ merged_data <- subscription %>%
   ) %>%
   
   # 1️⃣ Churn (did NOT continue after campaign)
+  # hvilke kunder, der ikke fortsætter med et almindeligt online abonnement efter kampagneperioden. 
+  # Ikke fortsætte = churn = 1
   mutate(
     churn = case_when(
       is.na(expiration_date) ~ 0,
-      expiration_date <= last_campaign_day ~ 1,
-      expiration_date > last_campaign_day ~ 0
+      expiration_date <= last_campaign_day ~ 0,
+      expiration_date > last_campaign_day ~ 1
     )
   ) %>%
   
   # 2️⃣ Continued subscription (inverse of churn)
+  # kunder, som fortsætter med et almindeligt online abonnement efter kampagnen.
   mutate(
     continued_subscription = 1 - churn
   ) %>%
   
   # 3️⃣ Early churn (continued BUT churned shortly after)
+  # kunder, der alligevel churner efter en ’kortere’ periode. 
   mutate(
     early_churn = case_when(
       continued_subscription == 1 & !is.na(expiration_date) &
@@ -49,6 +54,8 @@ merged_data <- subscription %>%
 merged_data %>%
   count(churn) %>%
   mutate(prop = n / sum(n))
+
+# view(merged_data)
 
 # Feature engineering / rensning
 model_data <- merged_data %>%
@@ -125,6 +132,9 @@ model_data %>%
 model_data %>%
   count(early_churn) %>%
   mutate(prop = n / sum(n))
+
+# joined data til eksport
+# write_csv(model_data, "data/model_data.csv")
 
 # Gem renset data
 saveRDS(model_data, "data/model_data.rds")
