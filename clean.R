@@ -28,8 +28,8 @@ merged_data <- subscription %>%
   mutate(
     churn = case_when(
       is.na(expiration_date) ~ 0,
-      expiration_date <= last_campaign_day ~ 0,
-      expiration_date > last_campaign_day ~ 1
+      expiration_date <= last_campaign_day ~ 1,
+      expiration_date > last_campaign_day ~ 0
     )
   ) %>%
   
