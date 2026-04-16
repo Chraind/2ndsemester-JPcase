@@ -44,7 +44,7 @@ merged_data <- subscription %>%
   mutate(
     early_churn = case_when(
       continued_subscription == 1 & !is.na(expiration_date) &
-        expiration_date <= last_campaign_day + 30 ~ 1,            #sætter early_churn til 1 hvis expiration under 30 dage 
+        expiration_date <= last_campaign_day + 90 ~ 1,            #sætter early_churn til 1 hvis expiration under 30 dage 
       continued_subscription == 1 ~ 0,                #sætter early churn til 0 hvis de fortsætter abonnering efter 30 dage
       continued_subscription == 0 ~ 0                 #sætter early churn til 0 hvis de slet ikke fortsatte abonnering
     )
@@ -134,7 +134,7 @@ model_data %>%
   mutate(prop = n / sum(n))
 
 # joined data til eksport
-# write_csv(model_data, "data/model_data.csv")
+write_csv(model_data, "data/model_data.csv")
 
 # Gem renset data
 saveRDS(model_data, "data/model_data.rds")
