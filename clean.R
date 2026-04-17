@@ -59,8 +59,6 @@ merged_data %>%
 
 # Feature engineering / rensning
 model_data <- merged_data %>%
-  select(-pseudo_id) %>%
-  
   mutate(
     order_date = as.Date(ymd_hms(order_date)),
     birthdate = as.Date(parse_date_time(birthdate, orders = c("dmy", "ymd", "mdy"))),
@@ -132,6 +130,8 @@ model_data %>%
 model_data %>%
   count(early_churn) %>%
   mutate(prop = n / sum(n))
+
+glimpse(model_data)
 
 # joined data til eksport
 write_csv(model_data, "data/model_data.csv")
