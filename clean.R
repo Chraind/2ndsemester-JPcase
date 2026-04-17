@@ -3,7 +3,7 @@ pacman::p_load(tidyverse, lubridate, forcats, readr)
 # Indlæs data
 cancellation <- read.csv("data/cancellation.csv")
 subscription <- read.csv("data/subscription_v2.csv", sep = ";")
-behavior <- read.csv("data/behavior.csv")
+# behavior <- read.csv("data/behavior.csv")
 
 # Behold kun 1 ID per row
 # TODO: behold kun den aktive ID (year 3000), i stedet for bare "den første"
