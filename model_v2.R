@@ -15,6 +15,7 @@ glimpse(model_data)
 # Rens data (fjern leakage, MEN behold early_churn til senere)
 model_data_clean <- model_data %>%
   select(
+    -pseudo_id,
     -subscription_cancel_date,
     -type,
     -reason,

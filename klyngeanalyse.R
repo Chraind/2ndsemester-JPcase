@@ -3,6 +3,21 @@ pacman::p_load(tidyverse, DataExplorer, ggpubr)
 
 # Indlæs data
 behavior <- read.csv("data/behavior.csv")
+model_data <- readRDS("data/model_data.rds")
+
+glimpse(model_data)
+
+table_data <- model_data %>%
+  select(
+    account_active_days,
+    previous_subscriptions,
+    previous_campaigns,
+    previous_trials,
+    newsletters_before_order,
+    newsletters_after_order
+  )
+
+view(table_data)
 
 # Omdan data til kundeniveau (én række pr. bruger)
 customer_df <- behavior %>%

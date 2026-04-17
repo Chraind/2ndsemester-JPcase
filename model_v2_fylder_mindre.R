@@ -101,6 +101,7 @@ run_model <- function(data, target, strata_var, recipe_steps) {
 
 model_data_clean <- model_data %>%
   select(
+    -pseudo_id,
     -subscription_cancel_date, -type, -reason,
     -expiration_date, -order_trackertag,
     -first_campaign_day, -last_campaign_day,
