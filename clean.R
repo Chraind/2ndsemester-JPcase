@@ -133,6 +133,8 @@ model_data %>%
 
 glimpse(model_data)
 
+view(model_data)
+
 # joined data til eksport
 write_csv(model_data, "data/model_data.csv")
 
