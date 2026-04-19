@@ -5,20 +5,10 @@ cancellation <- read.csv("data/cancellation.csv")
 subscription <- read.csv("data/subscription_v2.csv", sep = ";")
 # behavior <- read.csv("data/behavior.csv")
 
-# Behold kun 1 ID per row (seneste dato pr. tabel)
-# cancellation → brug expiration_date
-cancellation <- cancellation %>%
-  mutate(expiration_date = ymd(expiration_date)) %>%
-  group_by(pseudo_id) %>%
-  slice_max(expiration_date, n = 1, with_ties = FALSE) %>%
-  ungroup()
-
-# subscription → brug subscription_cancel_date
-subscription <- subscription %>%
-  mutate(subscription_cancel_date = dmy(subscription_cancel_date)) %>%
-  group_by(pseudo_id) %>%
-  slice_max(subscription_cancel_date, n = 1, with_ties = FALSE) %>%
-  ungroup()
+# Behold kun 1 ID per row
+# TODO: behold kun den aktive ID (year 3000), i stedet for bare "den første"
+cancellation <- cancellation %>% distinct(pseudo_id, .keep_all = TRUE)
+subscription <- subscription %>% distinct(pseudo_id, .keep_all = TRUE)
 
 # Flet data + churn-definition
 merged_data <- subscription %>%
@@ -26,13 +16,15 @@ merged_data <- subscription %>%
   
   # Parse dates
   mutate(
-    subscription_cancel_date = as.Date(subscription_cancel_date),
+    subscription_cancel_date = dmy(subscription_cancel_date),
     first_campaign_day = dmy(first_campaign_day),
     last_campaign_day = dmy(last_campaign_day),
-    expiration_date = as.Date(expiration_date)
+    expiration_date = ymd(expiration_date)
   ) %>%
   
-  # Churn
+  # 1️⃣ Churn (did NOT continue after campaign)
+  # hvilke kunder, der ikke fortsætter med et almindeligt online abonnement efter kampagneperioden. 
+  # Ikke fortsætte = churn = 1
   mutate(
     churn = case_when(
       is.na(expiration_date) ~ 0,
@@ -41,18 +33,20 @@ merged_data <- subscription %>%
     )
   ) %>%
   
-  # Continued subscription
+  # 2️⃣ Continued subscription (inverse of churn)
+  # kunder, som fortsætter med et almindeligt online abonnement efter kampagnen.
   mutate(
     continued_subscription = 1 - churn
   ) %>%
   
-  # Early churn
+  # 3️⃣ Early churn (continued BUT churned shortly after)
+  # kunder, der alligevel churner efter en ’kortere’ periode. 
   mutate(
     early_churn = case_when(
       continued_subscription == 1 & !is.na(expiration_date) &
-        expiration_date <= last_campaign_day + 90 ~ 1,
-      continued_subscription == 1 ~ 0,
-      continued_subscription == 0 ~ 0
+        expiration_date <= last_campaign_day + 90 ~ 1,            #sætter early_churn til 1 hvis expiration under 30 dage 
+      continued_subscription == 1 ~ 0,                #sætter early churn til 0 hvis de fortsætter abonnering efter 30 dage
+      continued_subscription == 0 ~ 0                 #sætter early churn til 0 hvis de slet ikke fortsatte abonnering
     )
   )
 
@@ -60,6 +54,8 @@ merged_data <- subscription %>%
 merged_data %>%
   count(churn) %>%
   mutate(prop = n / sum(n))
+
+# view(merged_data)
 
 # Feature engineering / rensning
 model_data <- merged_data %>%
@@ -139,6 +135,8 @@ glimpse(model_data)
 
 view(model_data)
 
-# Eksport
+# joined data til eksport
 write_csv(model_data, "data/model_data.csv")
+
+# Gem renset data
 saveRDS(model_data, "data/model_data.rds")
