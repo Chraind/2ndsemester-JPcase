@@ -1,12 +1,10 @@
 pacman::p_load(
   tidyverse, tidymodels, themis, ranger, glmnet,
-  kernlab, kknn, xgboost, naivebayes, rpart, future
+  kernlab, kknn, xgboost, naivebayes, rpart, future, vip
 )
 
 # Indlæs data
 model_data <- readRDS("data/model_data.rds")
-
-glimpse(model_data)
 
 ##################################################
 # 🔹 MODEL 1: CHURN (TASK 1 + 2)
@@ -27,6 +25,9 @@ model_data_clean <- model_data %>%
   ) %>%
   mutate(churn = factor(churn, levels = c("0", "1")))
 
+view(model_data_clean)
+
+names(model_data_clean)
 # Split
 set.seed(8)
 split <- initial_split(model_data_clean, prop = 0.8, strata = churn)
@@ -42,8 +43,9 @@ rec <- recipe(churn ~ ., data = train_data) %>%
   step_novel(all_nominal_predictors()) %>%
   step_dummy(all_nominal_predictors(), one_hot = TRUE) %>%
   step_zv(all_predictors()) %>%
-  step_normalize(all_numeric_predictors()) %>%
-  step_downsample(churn)
+  step_normalize(all_numeric_predictors()) %>% 
+  step_smote(churn)
+# step_downsample(churn)
 
 # Models
 decision_tree_spec <- decision_tree(
@@ -147,6 +149,15 @@ test_preds %>%
   roc_curve(truth = churn, .pred_1) %>%
   autoplot()
 
+best_model_id
+
+final_fit %>% 
+  extract_fit_parsnip() %>% 
+  vip(num_features = 20) +
+  theme_minimal() +
+  labs(title = "What Drives Churn?",
+       subtitle = "Variables ranked by Importance (Random Forest)")
+
 ##################################################
 # 🔹 MODEL 2: EARLY CHURN (TASK 3)
 ##################################################
@@ -225,3 +236,63 @@ test_preds_early <- collect_predictions(final_fit_early)
 
 test_preds_early %>%
   conf_mat(truth = early_churn, estimate = .pred_class)
+
+best_model_id_early
+
+final_fit_early %>% 
+  extract_fit_parsnip() %>% 
+  vip(num_features = 20) +
+  theme_minimal() +
+  labs(title = "What Drives Early Churn?",
+       subtitle = "Variables ranked by Importance (Decision Tree)")
+
+
+
+
+##################################################
+# 📊 RESULTS VISUALIZATION & COMPARISON
+##################################################
+
+# 1. Show the "Leaderboard" for Model 1 (Churn)
+# This lists all models ranked by F-Measure
+cat("\n--- Model 1: Churn Leaderboard ---\n")
+results %>%
+  rank_results(rank_metric = "f_meas", select_best = TRUE) %>%
+  select(wflow_id, .metric, mean, std_err, rank) %>%
+  filter(.metric == "f_meas") %>%
+  print()
+
+# 2. Plot Model 1 Comparison
+# This gives you a visual look at how the different engines compared
+p1 <- autoplot(results, metric = "f_meas", select_best = TRUE) +
+  geom_text(aes(label = wflow_id), vjust = -1, size = 3) +
+  labs(title = "Churn Model Comparison (F-Meas)",
+       subtitle = "Best version of each algorithm") +
+  theme_minimal()
+
+print(p1)
+
+# 3. Show the "Leaderboard" for Model 2 (Early Churn)
+cat("\n--- Model 2: Early Churn Leaderboard ---\n")
+results_early %>%
+  rank_results(rank_metric = "f_meas", select_best = TRUE) %>%
+  select(wflow_id, .metric, mean, std_err, rank) %>%
+  filter(.metric == "f_meas") %>%
+  print()
+
+# 4. Plot Model 2 Comparison
+p2 <- autoplot(results_early, metric = "f_meas", select_best = TRUE) +
+  geom_text(aes(label = wflow_id), vjust = -1, size = 3) +
+  labs(title = "Early Churn Model Comparison (F-Meas)",
+       subtitle = "Best version of each algorithm") +
+  theme_minimal()
+
+print(p2)
+
+# 5. Identify exactly which Hyperparameters the winner used
+cat("\n--- Best Model Hyperparameters ---\n")
+cat("Churn Model:", best_model_id, "\n")
+print(best_tuned)
+
+cat("\nEarly Churn Model:", best_model_id_early, "\n")
+print(best_tuned_early)

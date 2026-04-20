@@ -78,6 +78,7 @@ model_data <- merged_data %>%
     type = factor(type),
     reason = factor(reason),
     koen = factor(koen),
+    koen = fct_recode(koen, "Ikke oplyst" = ""),
     type = fct_na_value_to_level(type, level = "Ingen afmelding"),
     reason = fct_na_value_to_level(reason, level = "Ingen afmelding"),
     expiration_date = replace_na(expiration_date, as.Date("3000-01-01"))
