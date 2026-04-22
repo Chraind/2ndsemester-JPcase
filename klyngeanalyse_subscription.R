@@ -9,7 +9,7 @@ pacman::p_load(tidyverse, DataExplorer, ggpubr)
 behavior <- read.csv("data/behavior.csv")
 model_data <- readRDS("data/model_data.rds")
 
-glimpse(model_data)
+glimpse(behavior)
 
 # ----------------------------
 # 3. Create behavioral customer-level features
@@ -26,7 +26,6 @@ customer_behavior <- behavior %>%
     share_internal = mean(refr_medium == "internal"),
     n_unique_pages = n_distinct(webpage_id)
   )
-
 # ----------------------------
 # 4. Prepare subscription features
 # ----------------------------
@@ -41,26 +40,33 @@ subscription_features <- model_data %>%
     newsletters_after_order,
     churn
   )
-
 # ----------------------------
 # 5. MERGE DATA
 # ----------------------------
-customer_df <- customer_behavior %>%
-  left_join(subscription_features, by = "pseudo_id")
+customer_df <- subscription_features %>%
+  left_join(customer_behavior, by = "pseudo_id")
 
-# sanity check
+# Indsæt 0 i stedet for NA for de 70 "Spøgelses-brugere" 
+customer_df <- customer_df %>%
+  mutate(across(
+    c(n_visits, n_unique_pages, avg_scroll, starts_with("share_")),
+    ~replace_na(.x, 0)
+  ))
+
+# sanity check - should now be 1,275
 nrow(customer_df)
 
+# check
+colSums(is.na(customer_df))
+
 # ----------------------------
-# 6. Remove ID + handle missing values (FIX)
+# 6. Remove ID + handle missing values
 # ----------------------------
 cluster_input <- customer_df %>%
-  select(-pseudo_id, -churn) %>%
-  mutate(across(everything(), ~ifelse(is.infinite(.), NA, .))) %>%
-  drop_na()
+  select(-pseudo_id, -churn) 
 
 # check
-colSums(is.na(cluster_input))
+glimpse(cluster_input)
 
 # ----------------------------
 # 7. Explore distributions
@@ -87,13 +93,23 @@ biplot(pca, scale = 0)
 # ----------------------------
 # 10. Hierarchical clustering
 # ----------------------------
-hc_complete <- hclust(dist(pca$x[,1:4]), method = "complete")
-plot(hc_complete)
+# hc_complete <- hclust(dist(pca$x[,1:4]), method = "complete")
+# plot(hc_complete)
+# 
+# customer_df <- customer_df %>%
+#   filter(complete.cases(select(., -pseudo_id, -churn)))
+# 
+# customer_df$cluster_hc <- cutree(hc_complete, 5)
+# 
+# table(customer_df$cluster_hc)
+
+hc_ward <- hclust(dist(pca$x[,1:4]), method = "ward.D2")
+plot(hc_ward)
 
 customer_df <- customer_df %>%
   filter(complete.cases(select(., -pseudo_id, -churn)))
 
-customer_df$cluster_hc <- cutree(hc_complete, 3)
+customer_df$cluster_hc <- cutree(hc_ward, 5)
 
 table(customer_df$cluster_hc)
 
@@ -102,7 +118,7 @@ table(customer_df$cluster_hc)
 # ----------------------------
 set.seed(1)
 
-km <- kmeans(pca$x[,1:4], centers = 3, nstart = 20)
+km <- kmeans(pca$x[,1:4], centers = 5, nstart = 20)
 
 customer_df$cluster_km <- km$cluster
 
@@ -119,8 +135,6 @@ customer_df$cluster_km <- as.factor(customer_df$cluster_km)
 cluster_profile <- customer_df %>%
   group_by(cluster_km) %>%
   summarise(across(where(is.numeric), mean, na.rm = TRUE))
-
-view(cluster_profile)
 
 # ----------------------------
 # 13. Visualisation
@@ -161,4 +175,39 @@ churn_by_cluster <- customer_df %>%
   )
 
 print(churn_by_cluster)
+
+# ----------------------------
+# PRINT CLUSTER MEANS (COORDINATES)
+# ----------------------------
+cluster_summary_long <- customer_df %>%
+  group_by(cluster_km) %>%
+  summarise(across(where(is.numeric), \(x) mean(x, na.rm = TRUE))) %>%
+  pivot_longer(cols = -cluster_km, names_to = "variable", values_to = "mean_value") %>%
+  pivot_wider(names_from = cluster_km, names_prefix = "Cluster_", values_from = mean_value)
+
+# This will print the full table in your console
+print(cluster_summary_long, n = 50)
+
+# Definér 5 danske labels baseret på de opdaterede profiler
+customer_df <- customer_df %>%
+  mutate(cluster_label = case_when(
+    cluster_km == 1 ~ "Power-brugeren (Mest mobil)",
+    cluster_km == 2 ~ "Desktop-traditionalisten",
+    cluster_km == 3 ~ "Veteranen (Høj historik)",
+    cluster_km == 4 ~ "Mobil-nykommeren",
+    cluster_km == 5 ~ "Spøgelses-brugeren (Lav aktivitet)",
+    TRUE ~ "Andet"
+  ))
+
+# Tjek den nye fordeling
+table(customer_df$cluster_label, customer_df$churn)
+
+# Gem mapping til din Tidymodels-fil
+cluster_mapping <- customer_df %>% 
+  select(pseudo_id, cluster_label)
+
+saveRDS(cluster_mapping, "data/cluster_mapping.rds")
+
+# Tjek fordelingen
+table(customer_df$cluster_label)
 

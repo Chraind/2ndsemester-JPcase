@@ -5,13 +5,15 @@ pacman::p_load(
 
 # Indlæs data
 model_data <- readRDS("data/model_data.rds")
+cluster_mapping <- readRDS("data/cluster_mapping.rds")
 
-##################################################
-# 🔹 MODEL 1: CHURN (TASK 1 + 2)
-##################################################
-
-# Rens data (fjern leakage, MEN behold early_churn til senere)
+# Join cluster labels and clean initial data
 model_data_clean <- model_data %>%
+  # 1. Join the clusters
+  left_join(cluster_mapping, by = "pseudo_id") %>%
+  # 2. Convert label to factor for modeling
+  mutate(cluster_label = as.factor(cluster_label)) %>%
+  # 3. Rens data (fjern leakage og ID'er)
   select(
     -pseudo_id,
     -subscription_cancel_date,
@@ -25,9 +27,9 @@ model_data_clean <- model_data %>%
   ) %>%
   mutate(churn = factor(churn, levels = c("0", "1")))
 
-view(model_data_clean)
+# Check that cluster_label is present
+glimpse(model_data_clean)
 
-names(model_data_clean)
 # Split
 set.seed(8)
 split <- initial_split(model_data_clean, prop = 0.8, strata = churn)
@@ -101,23 +103,50 @@ workflow_set_obj <- workflow_set(
 
 metrics <- metric_set(roc_auc, accuracy, f_meas, sens, spec)
 
+
+# Train
 plan(multisession)
 
 set.seed(8)
-results <- workflow_set_obj %>%
-  workflow_map(
-    "tune_grid",
-    resamples = folds,
-    grid = 5,
-    metrics = metrics,
-    control = control_grid(
-      verbose = TRUE,
-      save_pred = TRUE,
-      save_workflow = TRUE
+
+# We use suppressMessages to hide the "Fold X: model Y/Z" notes 
+# and suppressWarnings to hide the Precision/Recall NA warnings.
+results <- suppressMessages(suppressWarnings(
+  workflow_set_obj %>%
+    workflow_map(
+      "tune_grid",
+      resamples = folds,
+      grid = 5,
+      metrics = metrics,
+      verbose = FALSE, # Switches off the tidymodels progress logger
+      control = control_grid(
+        save_pred = TRUE,
+        save_workflow = TRUE
+      )
     )
-  )
+))
 
 plan(sequential)
+
+# 
+# plan(multisession)
+# 
+# set.seed(8)
+# results <- workflow_set_obj %>%
+#   workflow_map(
+#     "tune_grid",
+#     resamples = folds,
+#     grid = 5,
+#     metrics = metrics,
+#     control = control_grid(
+#       verbose = TRUE,
+#       save_pred = TRUE,
+#       save_workflow = TRUE
+#     )
+#   )
+# 
+# plan(sequential)
+# 
 
 # Best model
 best_model_id <- results %>%
@@ -296,3 +325,31 @@ print(best_tuned)
 
 cat("\nEarly Churn Model:", best_model_id_early, "\n")
 print(best_tuned_early)
+
+
+
+
+
+# 
+# # 1. Get predictions for all users
+# final_results <- final_fit %>%
+#   extract_workflow() %>%
+#   augment(model_data_clean)
+# 
+# # 2. Create the Cluster-Risk Matrix
+# risk_profile <- final_results %>%
+#   group_by(cluster_label) %>%
+#   summarise(
+#     n_users = n(),
+#     # Model's average predicted probability of churn
+#     avg_predicted_risk = mean(.pred_1), 
+#     # Actual churn recorded in data
+#     actual_churn_rate = mean(churn == "1"),
+#     # Early Churn rate within this cluster
+#     early_churn_rate = mean(early_churn == 1),
+#     # Loyalty score (How many stayed)
+#     loyalty_rate = mean(churn == "0")
+#   ) %>%
+#   arrange(desc(avg_predicted_risk))
+# 
+# print(risk_profile)
