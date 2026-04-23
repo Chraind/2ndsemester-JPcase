@@ -6,6 +6,27 @@ pacman::p_load(
 # Indlæs data
 model_data <- readRDS("data/model_data.rds")
 cluster_mapping <- readRDS("data/cluster_mapping.rds")
+coolbehavior <- readRDS("data/coolbehavior.rds")
+
+glimpse(coolbehavior)
+
+### dashboard data til power BI
+  final_dashboard_data <- model_data %>%
+    left_join(cluster_mapping, by = "pseudo_id")
+  
+  final_dashboard_data$age <- round(final_dashboard_data$age)
+  
+  merged_dashboard_data <- final_dashboard_data %>%
+    left_join(coolbehavior, by = "pseudo_id")
+  
+  # Indsæt 0 i stedet for NA for de 70 "Spøgelses-brugere" 
+  merged_dashboard_data <- merged_dashboard_data %>%
+    mutate(across(
+      c(n_visits, n_unique_pages, avg_scroll, starts_with("share_")),
+      ~replace_na(.x, 0)
+    ))
+  
+  write_csv(merged_dashboard_data, "data/dashboard_data.csv")
 
 # Join cluster labels and clean initial data
 model_data_clean <- model_data %>%

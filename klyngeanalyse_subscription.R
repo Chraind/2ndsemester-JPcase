@@ -26,6 +26,9 @@ customer_behavior <- behavior %>%
     share_internal = mean(refr_medium == "internal"),
     n_unique_pages = n_distinct(webpage_id)
   )
+
+saveRDS(customer_behavior, "data/coolbehavior.rds")
+
 # ----------------------------
 # 4. Prepare subscription features
 # ----------------------------
