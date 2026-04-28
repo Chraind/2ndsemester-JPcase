@@ -51,6 +51,9 @@ model_data_clean <- model_data %>%
 # Check that cluster_label is present
 glimpse(model_data_clean)
 
+# Gem data
+saveRDS(model_data_clean, "data/model_data_clean.rds")
+
 # Split
 set.seed(8)
 split <- initial_split(model_data_clean, prop = 0.8, strata = churn)
