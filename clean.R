@@ -1,5 +1,9 @@
 pacman::p_load(tidyverse, lubridate, forcats, readr)
 
+# Fjern person der er 140 år gammel, måske andre outliers
+
+# account_active_days træk dato fra kampagne
+
 # Indlæs data
 cancellation <- read.csv("data/cancellation.csv")
 subscription <- read.csv("data/subscription_v2.csv", sep = ";")

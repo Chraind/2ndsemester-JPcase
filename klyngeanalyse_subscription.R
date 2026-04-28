@@ -43,6 +43,8 @@ subscription_features <- model_data %>%
     newsletters_after_order,
     churn
   )
+
+glimpse(subscription_features)
 # ----------------------------
 # 5. MERGE DATA
 # ----------------------------
@@ -93,6 +95,8 @@ abline(h = 1, col = "red", lty = 3)
 
 biplot(pca, scale = 0)
 
+# profilér på oprindelige Y variabler
+
 # ----------------------------
 # 10. Hierarchical clustering
 # ----------------------------
@@ -119,7 +123,7 @@ table(customer_df$cluster_hc)
 # ----------------------------
 # 11. K-means clustering
 # ----------------------------
-set.seed(1)
+set.seed(8)
 
 km <- kmeans(pca$x[,1:4], centers = 5, nstart = 20)
 

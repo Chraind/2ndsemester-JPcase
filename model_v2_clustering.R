@@ -62,12 +62,13 @@ folds <- vfold_cv(train_data, v = 5, strata = churn)
 
 # Recipe
 rec <- recipe(churn ~ ., data = train_data) %>%
-  step_rm(early_churn) %>%   # VERY IMPORTANT: avoid leakage
+  step_rm(early_churn) %>%
   step_novel(all_nominal_predictors()) %>%
   step_dummy(all_nominal_predictors(), one_hot = TRUE) %>%
   step_zv(all_predictors()) %>%
   step_normalize(all_numeric_predictors()) %>% 
   step_smote(churn)
+# step_upsample(churn)
 # step_downsample(churn)
 
 # Models
