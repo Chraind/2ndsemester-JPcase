@@ -60,13 +60,13 @@ model_data <- merged_data %>%
     # --- NY LOGIK: Justering af account_active_days ---
     # Vi finder ud af, hvor mange dage der skal trækkes fra, hvis de stadig er aktive efter kampagnen
     # Vi bruger pmin for at sikre, at vi ikke tæller dage efter import_date
-    aktivitet_slut_censored = pmin(replace_na(expiration_date, as.Date("3000-01-01")), import_date),
+    # aktivitet_slut_censored = pmin(replace_na(expiration_date, as.Date("3000-01-01")), import_date),
     
     # Beregn overskydende dage (kun hvis aktivitet slutter EFTER last_campaign_day)
-    dage_at_fjerne = pmax(0, as.numeric(aktivitet_slut_censored - last_campaign_day)),
+    # dage_at_fjerne = pmax(0, as.numeric(aktivitet_slut_censored - last_campaign_day)),
     
     # Opdater variabel (vi sikrer den ikke bliver negativ)
-    account_active_days = pmax(0, account_active_days - dage_at_fjerne),
+    # account_active_days = pmax(0, account_active_days - dage_at_fjerne),
     # --------------------------------------------------
     
     # Afledte variable
@@ -79,6 +79,7 @@ model_data <- merged_data %>%
     !is.na(birthdate),
     !is.na(usr_created),
     !is.na(order_date),
+    previous_trials <= 50,
     age >= 15,
     age <= 105,
     kundetid_dage >= 0
@@ -113,8 +114,8 @@ model_data <- merged_data %>%
     -order_date,
     -birthdate,
     -usr_created,
-    -aktivitet_slut_censored,
-    -dage_at_fjerne
+    # -aktivitet_slut_censored,
+    # -dage_at_fjerne
   )
 
 # 5. Tjek resultatet
@@ -142,6 +143,8 @@ outliers <- merged_data %>%
 
 # Kig outliers
 glimpse(outliers)
+
+view(model_data)
 
 # Gem data
 saveRDS(model_data, "data/model_data.rds")

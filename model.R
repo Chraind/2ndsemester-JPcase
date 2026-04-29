@@ -11,30 +11,27 @@ coolbehavior <- readRDS("data/coolbehavior.rds")
 glimpse(coolbehavior)
 
 ### dashboard data til power BI
-  final_dashboard_data <- model_data %>%
-    left_join(cluster_mapping, by = "pseudo_id")
-  
-  final_dashboard_data$age <- round(final_dashboard_data$age)
-  
-  merged_dashboard_data <- final_dashboard_data %>%
-    left_join(coolbehavior, by = "pseudo_id")
-  
-  # Indsæt 0 i stedet for NA for de 70 "Spøgelses-brugere" 
-  merged_dashboard_data <- merged_dashboard_data %>%
-    mutate(across(
-      c(n_visits, n_unique_pages, avg_scroll, starts_with("share_")),
-      ~replace_na(.x, 0)
-    ))
-  
-  write_csv(merged_dashboard_data, "data/dashboard_data.csv")
+final_dashboard_data <- model_data %>%
+  left_join(cluster_mapping, by = "pseudo_id")
+
+final_dashboard_data$age <- round(final_dashboard_data$age)
+
+merged_dashboard_data <- final_dashboard_data %>%
+  left_join(coolbehavior, by = "pseudo_id")
+
+# Indsæt 0 i stedet for NA for de 70 "Spøgelses-brugere" 
+merged_dashboard_data <- merged_dashboard_data %>%
+  mutate(across(
+    c(n_visits, n_unique_pages, avg_scroll, starts_with("share_")),
+    ~replace_na(.x, 0)
+  ))
+
+write_csv(merged_dashboard_data, "data/dashboard_data.csv")
 
 # Join cluster labels and clean initial data
 model_data_clean <- model_data %>%
-  # 1. Join the clusters
   left_join(cluster_mapping, by = "pseudo_id") %>%
-  # 2. Convert label to factor for modeling
   mutate(cluster_label = as.factor(cluster_label)) %>%
-  # 3. Rens data (fjern leakage og ID'er)
   select(
     -pseudo_id,
     -subscription_cancel_date,
@@ -46,10 +43,15 @@ model_data_clean <- model_data %>%
     -last_campaign_day,
     -continued_subscription
   ) %>%
-  mutate(churn = factor(churn, levels = c("0", "1")))
+  mutate(churn = factor(churn, levels = c("1", "0")))
 
 # Check that cluster_label is present
 glimpse(model_data_clean)
+
+# Churn fordeling
+model_data_clean %>%
+  count(churn) %>%
+  mutate(prop = n / sum(n))
 
 # Gem data
 saveRDS(model_data_clean, "data/model_data_clean.rds")
@@ -134,8 +136,6 @@ plan(multisession)
 
 set.seed(8)
 
-# We use suppressMessages to hide the "Fold X: model Y/Z" notes 
-# and suppressWarnings to hide the Precision/Recall NA warnings.
 results <- suppressMessages(suppressWarnings(
   workflow_set_obj %>%
     workflow_map(
@@ -143,7 +143,7 @@ results <- suppressMessages(suppressWarnings(
       resamples = folds,
       grid = 5,
       metrics = metrics,
-      verbose = FALSE, # Switches off the tidymodels progress logger
+      verbose = FALSE,
       control = control_grid(
         save_pred = TRUE,
         save_workflow = TRUE
@@ -152,26 +152,6 @@ results <- suppressMessages(suppressWarnings(
 ))
 
 plan(sequential)
-
-# 
-# plan(multisession)
-# 
-# set.seed(8)
-# results <- workflow_set_obj %>%
-#   workflow_map(
-#     "tune_grid",
-#     resamples = folds,
-#     grid = 5,
-#     metrics = metrics,
-#     control = control_grid(
-#       verbose = TRUE,
-#       save_pred = TRUE,
-#       save_workflow = TRUE
-#     )
-#   )
-# 
-# plan(sequential)
-# 
 
 # Best model
 best_model_id <- results %>%
@@ -355,26 +335,108 @@ print(best_tuned_early)
 
 
 
-# 
-# # 1. Get predictions for all users
-# final_results <- final_fit %>%
-#   extract_workflow() %>%
-#   augment(model_data_clean)
-# 
-# # 2. Create the Cluster-Risk Matrix
-# risk_profile <- final_results %>%
-#   group_by(cluster_label) %>%
-#   summarise(
-#     n_users = n(),
-#     # Model's average predicted probability of churn
-#     avg_predicted_risk = mean(.pred_1), 
-#     # Actual churn recorded in data
-#     actual_churn_rate = mean(churn == "1"),
-#     # Early Churn rate within this cluster
-#     early_churn_rate = mean(early_churn == 1),
-#     # Loyalty score (How many stayed)
-#     loyalty_rate = mean(churn == "0")
-#   ) %>%
-#   arrange(desc(avg_predicted_risk))
-# 
-# print(risk_profile)
+# Best og worst case definition
+
+# Extract fitted workflows
+churn_model <- extract_workflow(final_fit)
+early_model <- extract_workflow(final_fit_early)
+
+scenarier <- tibble(
+  case = c("Best case", "Average case", "Worst case"),
+  
+  # numeric
+  account_active_days = c(2000, 450, 5),
+  age = c(70, 45, 22),
+  previous_subscriptions = c(1, 2, 0),
+  previous_campaigns = c(1, 2, 0),
+  previous_trials = c(0, 10, 0),
+  newsletters_before_order = c(1, 2, 0),
+  newsletters_after_order = c(1, 2, 0),
+  
+  # categorical
+  koen = factor(
+    c("Mand", "Mand", "Mand"),
+    levels = levels(model_data_clean$koen)
+  ),
+  
+  kundetid_gruppe = factor(
+    c("6+ måneder", "6+ måneder", "0-7 dage"),
+    levels = levels(model_data_clean$kundetid_gruppe)
+  ),
+  
+  cluster_label = factor(
+    c(
+      "Veteranen (Høj historik)",
+      "Desktop-traditionalisten",
+      "Mobil-nykommeren"
+    ),
+    levels = levels(model_data_clean$cluster_label)
+  ),
+  
+  permission_given_order = factor(
+    c("1", "1", "0"),
+    levels = levels(model_data_clean$permission_given_order)
+  ),
+  
+  permission_given_today = factor(
+    c("1", "0", "0"),
+    levels = levels(model_data_clean$permission_given_today)
+  ),
+  
+  ##################################################
+  # Dummy columns required by workflows
+  ##################################################
+  churn = factor(c("0", "0", "0"), levels = c("1", "0")),
+  early_churn = c(0, 0, 0)
+)
+
+##################################################
+# Predict
+##################################################
+
+# Main churn model
+p_churn <- predict(
+  churn_model,
+  scenarier,
+  type = "prob"
+) %>%
+  select(churn_prob = .pred_1)
+
+# Early churn model
+p_early <- predict(
+  early_model,
+  scenarier,
+  type = "prob"
+) %>%
+  select(early_prob = .pred_1)
+
+##################################################
+# Combine
+##################################################
+
+scenario_results <- bind_cols(
+  scenarier,
+  p_churn,
+  p_early
+) %>%
+  mutate(
+    total_risk =
+      churn_prob +
+      (1 - churn_prob) * early_prob
+  ) %>%
+  mutate(
+    across(
+      c(churn_prob, early_prob, total_risk),
+      ~ round(.x * 100, 1)
+    )
+  ) %>%
+  arrange(total_risk) %>%
+  select(
+    case,
+    total_risk,
+    churn_prob,
+    early_prob,
+    everything()
+  )
+
+print(scenario_results, width = Inf)
