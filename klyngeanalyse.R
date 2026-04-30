@@ -1,19 +1,12 @@
-# ----------------------------
-# 1. Load packages
-# ----------------------------
 pacman::p_load(tidyverse, DataExplorer, ggpubr)
 
-# ----------------------------
-# 2. Load data
-# ----------------------------
+# Load data
 behavior <- read.csv("data/behavior.csv")
 model_data <- readRDS("data/model_data.rds")
 
-glimpse(behavior)
+# TODO profilér på oprindelige Y variabler
 
-# ----------------------------
-# 3. Create behavioral customer-level features
-# ----------------------------
+# Vi formaterer data så vi kan join det med vores model_data
 customer_behavior <- behavior %>%
   group_by(pseudo_id) %>%
   summarise(
@@ -29,9 +22,7 @@ customer_behavior <- behavior %>%
 
 saveRDS(customer_behavior, "data/coolbehavior.rds")
 
-# ----------------------------
-# 4. Prepare subscription features
-# ----------------------------
+# Vi vælger værdier fra model_data som skal bruges til klyngeanalysen til join
 subscription_features <- model_data %>%
   select(
     pseudo_id,
@@ -44,48 +35,36 @@ subscription_features <- model_data %>%
     churn
   )
 
-glimpse(subscription_features)
-# ----------------------------
-# 5. MERGE DATA
-# ----------------------------
+# Vi joiner tabellerne sammen til klyngeanalysen
 customer_df <- subscription_features %>%
   left_join(customer_behavior, by = "pseudo_id")
 
-# Indsæt 0 i stedet for NA for de 70 "Spøgelses-brugere" 
+# Indsæt 0 i stedet for NA for de 70 "Spøgelses-brugere"
+# Siden der er nogle brugere som ikke har behavior værdier,
+# sætter vi dem til 0 for at beholde rækkerne
 customer_df <- customer_df %>%
   mutate(across(
     c(n_visits, n_unique_pages, avg_scroll, starts_with("share_")),
     ~replace_na(.x, 0)
   ))
 
-# sanity check - should now be 1,275
-nrow(customer_df)
-
-# check
+# check om vi har NA værdier
 colSums(is.na(customer_df))
 
-# ----------------------------
-# 6. Remove ID + handle missing values
-# ----------------------------
+# Nu fjerner vi pseudo_ID
 cluster_input <- customer_df %>%
   select(-pseudo_id, -churn) 
 
-# check
+# Tjek data som ryger ind i modellen
 glimpse(cluster_input)
 
-# ----------------------------
-# 7. Explore distributions
-# ----------------------------
+# Tjek eventuelt histogram over tallene
 plot_histogram(cluster_input)
 
-# ----------------------------
-# 8. Scale variables
-# ----------------------------
+# Kør scale til klyngeanalysen
 customer_scaled <- scale(cluster_input)
 
-# ----------------------------
-# 9. PCA
-# ----------------------------
+# Principal component analyse
 pca <- prcomp(customer_scaled, scale = TRUE)
 
 summary(pca)
@@ -95,11 +74,8 @@ abline(h = 1, col = "red", lty = 3)
 
 biplot(pca, scale = 0)
 
-# profilér på oprindelige Y variabler
+# Hierakisk clustering
 
-# ----------------------------
-# 10. Hierarchical clustering
-# ----------------------------
 # hc_complete <- hclust(dist(pca$x[,1:4]), method = "complete")
 # plot(hc_complete)
 # 
@@ -120,9 +96,7 @@ customer_df$cluster_hc <- cutree(hc_ward, 5)
 
 table(customer_df$cluster_hc)
 
-# ----------------------------
-# 11. K-means clustering
-# ----------------------------
+# K-means clustering
 set.seed(8)
 
 km <- kmeans(pca$x[,1:4], centers = 5, nstart = 20)
@@ -134,18 +108,14 @@ table(customer_df$cluster_km)
 # compare methods
 table(customer_df$cluster_km, customer_df$cluster_hc)
 
-# ----------------------------
-# 12. Cluster profiling
-# ----------------------------
+# Klyngeprofilering
 customer_df$cluster_km <- as.factor(customer_df$cluster_km)
 
 cluster_profile <- customer_df %>%
   group_by(cluster_km) %>%
   summarise(across(where(is.numeric), mean, na.rm = TRUE))
 
-# ----------------------------
-# 13. Visualisation
-# ----------------------------
+# Visualisering
 ggboxplot(customer_df, x = "cluster_km", y = "n_visits",
           color = "cluster_km")
 
@@ -158,9 +128,7 @@ ggboxplot(customer_df, x = "cluster_km", y = "account_active_days",
 ggboxplot(customer_df, x = "cluster_km", y = "previous_subscriptions",
           color = "cluster_km")
 
-# ----------------------------
-# 14. ANOVA tests
-# ----------------------------
+# ANOVA tests
 summary(aov(n_visits ~ cluster_km, data = customer_df))
 summary(aov(avg_scroll ~ cluster_km, data = customer_df))
 
@@ -171,9 +139,7 @@ summary(aov(previous_trials ~ cluster_km, data = customer_df))
 summary(aov(newsletters_before_order ~ cluster_km, data = customer_df))
 summary(aov(newsletters_after_order ~ cluster_km, data = customer_df))
 
-# ----------------------------
-# 15. CHURN ANALYSIS (IMPORTANT)
-# ----------------------------
+# Churn analyse
 churn_by_cluster <- customer_df %>%
   group_by(cluster_km) %>%
   summarise(
@@ -183,19 +149,16 @@ churn_by_cluster <- customer_df %>%
 
 print(churn_by_cluster)
 
-# ----------------------------
-# PRINT CLUSTER MEANS (COORDINATES)
-# ----------------------------
+# Print summary af klynger
 cluster_summary_long <- customer_df %>%
   group_by(cluster_km) %>%
   summarise(across(where(is.numeric), \(x) mean(x, na.rm = TRUE))) %>%
   pivot_longer(cols = -cluster_km, names_to = "variable", values_to = "mean_value") %>%
   pivot_wider(names_from = cluster_km, names_prefix = "Cluster_", values_from = mean_value)
 
-# This will print the full table in your console
 print(cluster_summary_long, n = 50)
 
-# Definér 5 danske labels baseret på de opdaterede profiler
+# definering af 5 labels baseret på profilerne
 customer_df <- customer_df %>%
   mutate(cluster_label = case_when(
     cluster_km == 1 ~ "Power-brugeren (Mest mobil)",
@@ -209,7 +172,7 @@ customer_df <- customer_df %>%
 # Tjek den nye fordeling
 table(customer_df$cluster_label, customer_df$churn)
 
-# Gem mapping til din Tidymodels-fil
+# Gem mapping til din Tidymodels model
 cluster_mapping <- customer_df %>% 
   select(pseudo_id, cluster_label)
 
@@ -217,4 +180,3 @@ saveRDS(cluster_mapping, "data/cluster_mapping.rds")
 
 # Tjek fordelingen
 table(customer_df$cluster_label)
-

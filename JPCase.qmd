@@ -54,59 +54,51 @@ Cancellation.csv:churn‑label + begrundelser
 
 Subscription.csv: abonnements‑ og kampagneinfo 
 
+# Datajura
+
+Når Jyllands-Posten arbejder med abonnentdata og digitale brugerdata, er datajura en vigtig del af projektet. Det at sikre data bliver brugt lovligt og ansvarligt. De nye oplysninger fra JP/Politikens Hus viser, at data kan indgå i flere sammenhænge, fx abonnement, brugeradfærd, annoncering, kampagnestyring og målretning. Derfor er det vigtigt at have styr på behandlingsgrundlag, samtykke, fælles dataansvar og sikkerhed (JP/Politikens Hus, 2025). 
+
 # GDPR og etik
 
-GDPR er en af de vigtigste ting at have styr på, når man arbejder med data. Det betyder, at Jyllands Posten skal have et lovligt grundlag for at bruge data, fx samtykke eller legitim interesse. Samtidig må de kun bruge de data, der er nødvendige, og de må ikke bruge dem til andre formål end det, de er indsamlet til. Derudover skal kunderne informeres tydeligt om, hvad deres data bliver brugt til, og data skal opbevares sikkert og slettes, når det ikke længere er relevant. 
+GDPR er en af de vigtigste ting at have styr på, når man arbejder med persondata. I denne case kan der være tale om abonnementsdata, adfærdsdata, kampagnedata og cookie-baserede ID’er. Jyllands-Posten skal derfor have et lovligt grundlag for at behandle data. Det kan fx være samtykke eller legitim interesse jf. artikel 6 i GDPR (JP/Politikens Hus, 2025). 
 
-GDPR er også en vigtig retskilde i forhold til persondata og stiller krav til, hvordan data må bruges. For det første skal der være et behandlingsgrundlag (artikel 6), fx samtykke eller legitim interesse, som fx kan være analyse af churn. Hvis man bruger legitim interesse, skal man stadig tænke over kundens rettigheder og være gennemsigtig. 
+I JP/Politikens Hus’ retningslinjer står der, at de bruger en Consent Management Platform, også kaldet CMP, til at indhente samtykke fra brugerne. Det betyder, at brugeren skal kunne tage stilling til, hvilke former for databehandling de accepterer. Samtykke er især vigtigt, hvis data bruges til profilering, målretning eller personaliserede annoncer. Hvis der bruges legitim interesse, skal det kunne begrundes, og der skal laves en vurdering af virksomhedens interesse over for brugerens rettigheder (JP/Politikens Hus, 2025). 
 
-Der er også princippet om dataminimering, som betyder, at man kun må indsamle de data, man har brug for. Samtidig er der formålsbegrænsning, som betyder, at data kun må bruges til det formål, de er indsamlet til. Til sidst har kunderne rettigheder som indsigt og sletning, som virksomheden skal kunne håndtere. 
+Derudover gælder princippet om dataminimering jf. artikel 5 i GDPR. Det betyder, at Jyllands-Posten kun må bruge de data, der er nødvendige for formålet. Hvis formålet er at analysere churn, skal man derfor overveje, hvilke variable der faktisk er relevante. Man må ikke bare tage alle data med, fordi de findes. Samtidig gælder formålsbegrænsning jf. artikel 5, som betyder, at data kun må bruges til det formål, de er indsamlet til. Hvis data fx er indsamlet til abonnementshåndtering, kan de ikke uden videre bruges til avanceret profilering uden et gyldigt grundlag (JP/Politikens Hus, 2025). 
 
-## AI og etik
+Kunderne har også rettigheder efter GDPR jf. artikel 13-22. De har fx ret til indsigt, sletning, berigtigelse og i nogle tilfælde dataportabilitet. Det betyder, at Jyllands-Posten skal have systemer og processer, der kan håndtere, hvis en kunde ønsker at se eller få slettet sine data (JP/Politikens Hus, 2025). 
 
-Når det kommer til AI, er der også nogle etiske ting, man skal tænke over. Modellerne må fx ikke ende med at diskriminere bestemte kundegrupper eller træffe unfair beslutninger. Derfor er det vigtigt, at man kan forklare, hvorfor en kunde bliver vurderet til at churne. Samtidig bør AI bruges til at skabe værdi for kunden, fx gennem bedre og mere relevante tilbud, og ikke til at presse eller manipulere kunderne. 
+## Fælles dataansvar
 
-Når Jyllands Posten bruger AI til fx at forudsige churn, kan der opstå problemer med bias. Hvis modellen er trænet på gamle data, kan den komme til at videreføre skævheder. Fx hvis unge kunder har haft højere churn tidligere, kan modellen komme til at “straffe” dem, selvom årsagen måske ikke er retfærdig. 
+En vigtig ny oplysning er, at JP/Politikens Hus i nogle situationer arbejder med fælles dataansvar jf. artikel 26 i GDPR. Det betyder, at JPPOL og en annoncør eller et mediebureau sammen kan være ansvarlige for bestemte dele af databehandlingen. Det sker fx, når en annoncør køber annoncering på JPPOL-sites og bruger egne eller tredjeparts teknologier til at indsamle data om brugere (JP/Politikens Hus, 2025). 
 
-Derudover er transparens vigtig. Hvis en kunde får særlige tilbud eller bliver behandlet anderledes, bør man kunne forklare hvorfor. Hvis ikke, kan det skabe mistillid. 
+Her er ansvarsfordelingen vigtig. JPPOL er ansvarlig for, at der findes et gyldigt behandlingsgrundlag, og at brugerne får information om behandlingen. Indkøberen eller annoncøren er ansvarlig for den videre behandling af data, efter at data er blevet sendt videre. Det betyder, at begge parter har ansvar, men ikke nødvendigvis for det samme (JP/Politikens Hus, 2025). 
 
-En anden ting er manipulation. Det kan være fint at give tilbud til kunder, der er ved at opsige, men det må ikke blive på en måde, hvor kunder bliver presset uden at forstå det. 
+Hvis en bruger henvender sig om sine rettigheder, skal parterne kunne sende henvendelsen videre til den rigtige part hurtigst muligt og senest inden for 72 timer. Det viser, at dataansvar ikke kun handler om regler, men også om klare processer i praksis (JP/Politikens Hus, 2025). 
 
-Samlet set handler det om, at AI skal bruges ansvarligt med fokus på fairness, gennemsigtighed og kundens oplevelse ikke kun profit.
+## AI etik og lovgivning
 
-## AI Lovgivning
+Når Jyllands-Posten bruger AI og Machine Learning til at forudsige churn, opstår der også etiske overvejelser. En churn-model kan hjælpe virksomheden med at finde kunder, der er i risiko for at opsige deres abonnement. Det kan være positivt, fordi virksomheden kan give mere relevante tilbud og bedre kommunikation. Men det kan også blive problematisk, hvis modellen bruges til at presse eller manipulere kunder. 
 
-I forhold til AI lovgivning er der også nogle ting, Jyllands Posten skal have styr på. Selvom en churnmodel typisk bliver set som lav til middel risiko, er der stadig krav. De skal fx kunne forklare, hvordan modellen virker, og sikre at den ikke skaber problemer for kunderne. 
+En vigtig risiko er bias. Hvis modellen trænes på historiske data, kan den komme til at videreføre gamle skævheder. Hvis unge kunder fx tidligere har haft høj churn, kan modellen komme til at vurdere unge som mere risikable, selvom årsagen måske ikke er fair. Derfor er det vigtigt at teste modellen og kunne forklare de vigtigste faktorer bag en churn-vurdering. 
 
-Den nye EU AI Act stiller krav til, hvordan AI bliver udviklet og brugt. Selvom en churnmodel ikke er højrisiko, betyder det ikke, at man bare kan gøre hvad man vil. Jyllands Posten skal stadig have styr på dokumentation, fx hvordan modellen er trænet, hvilke data der er brugt, og hvad formålet er. 
+Transparens er også vigtig. Hvis kunder bliver behandlet forskelligt på baggrund af en model, bør virksomheden kunne forklare hvorfor. Det betyder ikke, at kunden skal se hele modellen, men der skal være en forståelig forklaring på, hvorfor modellen vurderer en kunde som høj risiko. 
 
-Derudover er gennemsigtighed vigtigt. Hvis AI bliver brugt til beslutninger, der påvirker kunder, skal man kunne forklare det. Ellers kan det skabe mistillid. 
+I forhold til AI-lovgivning, fx EU AI Act, vil en churn-model typisk ikke være højrisiko. Men Jyllands-Posten bør stadig dokumentere, hvordan modellen er udviklet, hvilke data der er brugt, hvordan den er evalueret, og hvad formålet er. Hvis modellen senere bruges til automatiske beslutninger, fx ændring af priser eller vilkår, kan risikoen blive højere, og så vil kravene også blive større. 
 
-Hvis modellen senere bliver brugt mere direkte, fx til at ændre priser eller vilkår automatisk, kan den blive vurderet som højere risiko. Så kommer der endnu strengere krav. 
+## Cybersikkerhed
 
-Derfor er det vigtigt, at Jyllands-Posten løbende holder øje med deres AI og sikrer, at det overholder reglerne. 
+Cybersikkerhed er også en central del af datajuraen. Når Jyllands-Posten arbejder med mange abonnent- og brugerdata, skal de beskytte data mod datalæk og uautoriseret adgang. I retningslinjerne fremgår det, at der skal bruges passende tekniske og organisatoriske foranstaltninger jf. artikel 32 i GDPR. Det gør de ved pseudonymisering, adgangsstyring og løbende test af sikkerheden (JP/Politikens Hus, 2025). 
 
-## Cyber security
+Det handler også om at sikre fortrolighed. Data skal være beskyttet, de må ikke ændres forkert, og systemerne skal kunne fungere stabilt. Hvis der sker et databrud, skal den part, hvis sikkerhed er berørt, anmelde bruddet til Datatilsynet jf. artikel 33, og i nogle tilfælde informere brugerne jf. artikel 34 (JP/Politikens Hus, 2025). 
 
-Til sidst er cybersikkerhed også en vigtig del. Jyllands-Posten skal beskytte deres data mod hacking og datalæk, fx ved brug af kryptering, adgangsstyring og overvågning af systemer. Det er både et krav og vigtigt for at bevare kundernes tillid. 
+## Databehandlere og tredjepartsteknologier
 
-Når man arbejder med mange abonnentdata, er det vigtigt at sikre, at uvedkommende ikke kan få adgang til dem. Det betyder fx, at data skal være krypteret både når de bliver gemt og når de bliver sendt. Samtidig skal der være styr på, hvem der har adgang, så det kun er relevante medarbejdere. 
+De nye oplysninger viser også, at JPPOL og samarbejdspartnere kan bruge databehandlere og tredjepartsteknologier. Det kan fx være annonceplatforme, analyseværktøjer eller andre teknologipartnere. Her er det vigtigt, at der findes gyldige databehandleraftaler jf. artikel 28 i GDPR, og at leverandørerne kan leve op til reglerne (JP/Politikens Hus, 2025). 
 
-Derudover bør systemerne overvåges, så man kan opdage mistænkelig aktivitet hurtigt. Men cybersikkerhed handler ikke kun om teknik. Menneskelige fejl er ofte en stor risiko, så medarbejdere skal også have viden om fx phishing og hvordan man håndterer data korrekt. 
+Derudover fremgår det, at JPPOL-data ikke må kopieres til egne systemer eller bruges på andre sites end JPPOL-sites. Det er vigtigt, fordi det beskytter JPPOL’s førstepartsdata og mindsker risikoen for, at data bliver brugt uden for det oprindelige formål (JP/Politikens Hus, 2025). 
 
-Hvis der sker et databrud, skal Jyllands-Posten melde det inden for 72 timer og i nogle tilfælde også informere kunderne. 
-
-Samlet set er cybersikkerhed både et lovkrav og vigtigt for at opretholde kundernes tillid. 
-
-## Delkonklusion
-
-Konklusionen er derfor, at succes med en churn model ikke kun handler om, hvor god modellen er, men også hvordan den bliver brugt i praksis. Hvis Jyllands-Posten arbejder struktureret med GDPR, sørger for transparens i deres AI og har styr på cybersikkerhed, kan de både forbedre deres forretning og skabe bedre relationer til kunderne. Omvendt kan manglende fokus på de her ting føre til mistillid, problemer med lovgivning og i sidste ende tab af kunder. Derfor er det vigtigt, at datajura, etik og sikkerhed bliver tænkt ind fra starten og ikke først bagefter. 
-
-Samtidig kan man sige, at en ansvarlig brug af data og AI faktisk også kan være en fordel i konkurrencen. Kunder er blevet mere opmærksomme på deres data og rettigheder, og derfor betyder gennemsigtighed mere end før. Hvis Jyllands-Posten viser, at de håndterer data ordentligt og bruger AI på en fair måde, kan det være med til at skabe tillid. 
-
-Det betyder også, at det ikke kun handler om at tjene penge på kort sigt, men om at opbygge en løsning, der fungerer på lang sigt. Ved at kombinere gode analyser med ansvarlig brug af data kan Jyllands-Posten skabe værdi både for sig selv og for kunderne. 
-
-# Databehandling
+# Databehandling TODO
 
 Der starts med at rense og klargøres data, så vi har et Datasæt for Jyllands Postens abonnementsdata der er klar til udvilkingen af en Machine Learning model. 
 

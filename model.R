@@ -8,8 +8,6 @@ model_data <- readRDS("data/model_data.rds")
 cluster_mapping <- readRDS("data/cluster_mapping.rds")
 coolbehavior <- readRDS("data/coolbehavior.rds")
 
-glimpse(coolbehavior)
-
 ### dashboard data til power BI
 final_dashboard_data <- model_data %>%
   left_join(cluster_mapping, by = "pseudo_id")
@@ -141,7 +139,7 @@ results <- suppressMessages(suppressWarnings(
     workflow_map(
       "tune_grid",
       resamples = folds,
-      grid = 5,
+      grid = 10,
       metrics = metrics,
       verbose = FALSE,
       control = control_grid(
@@ -239,7 +237,7 @@ results_early <- workflow_set_early %>%
   workflow_map(
     "tune_grid",
     resamples = folds_early,
-    grid = 5,
+    grid = 10,
     metrics = metrics
   )
 
@@ -281,62 +279,7 @@ final_fit_early %>%
        subtitle = "Variables ranked by Importance (Decision Tree)")
 
 
-
-
-##################################################
-# 📊 RESULTS VISUALIZATION & COMPARISON
-##################################################
-
-# 1. Show the "Leaderboard" for Model 1 (Churn)
-# This lists all models ranked by F-Measure
-cat("\n--- Model 1: Churn Leaderboard ---\n")
-results %>%
-  rank_results(rank_metric = "f_meas", select_best = TRUE) %>%
-  select(wflow_id, .metric, mean, std_err, rank) %>%
-  filter(.metric == "f_meas") %>%
-  print()
-
-# 2. Plot Model 1 Comparison
-# This gives you a visual look at how the different engines compared
-p1 <- autoplot(results, metric = "f_meas", select_best = TRUE) +
-  geom_text(aes(label = wflow_id), vjust = -1, size = 3) +
-  labs(title = "Churn Model Comparison (F-Meas)",
-       subtitle = "Best version of each algorithm") +
-  theme_minimal()
-
-print(p1)
-
-# 3. Show the "Leaderboard" for Model 2 (Early Churn)
-cat("\n--- Model 2: Early Churn Leaderboard ---\n")
-results_early %>%
-  rank_results(rank_metric = "f_meas", select_best = TRUE) %>%
-  select(wflow_id, .metric, mean, std_err, rank) %>%
-  filter(.metric == "f_meas") %>%
-  print()
-
-# 4. Plot Model 2 Comparison
-p2 <- autoplot(results_early, metric = "f_meas", select_best = TRUE) +
-  geom_text(aes(label = wflow_id), vjust = -1, size = 3) +
-  labs(title = "Early Churn Model Comparison (F-Meas)",
-       subtitle = "Best version of each algorithm") +
-  theme_minimal()
-
-print(p2)
-
-# 5. Identify exactly which Hyperparameters the winner used
-cat("\n--- Best Model Hyperparameters ---\n")
-cat("Churn Model:", best_model_id, "\n")
-print(best_tuned)
-
-cat("\nEarly Churn Model:", best_model_id_early, "\n")
-print(best_tuned_early)
-
-
-
-
-
 # Best og worst case definition
-
 # Extract fitted workflows
 churn_model <- extract_workflow(final_fit)
 early_model <- extract_workflow(final_fit_early)
@@ -353,7 +296,7 @@ scenarier <- tibble(
   newsletters_before_order = c(1, 2, 0),
   newsletters_after_order = c(1, 2, 0),
   
-  # categorical
+  # Kategoriske værdier
   koen = factor(
     c("Mand", "Mand", "Mand"),
     levels = levels(model_data_clean$koen)
@@ -382,18 +325,10 @@ scenarier <- tibble(
     c("1", "0", "0"),
     levels = levels(model_data_clean$permission_given_today)
   ),
-  
-  ##################################################
-  # Dummy columns required by workflows
-  ##################################################
   churn = factor(c("0", "0", "0"), levels = c("1", "0")),
   early_churn = c(0, 0, 0)
 )
-
-##################################################
-# Predict
-##################################################
-
+# Forudseelser
 # Main churn model
 p_churn <- predict(
   churn_model,
@@ -410,10 +345,7 @@ p_early <- predict(
 ) %>%
   select(early_prob = .pred_1)
 
-##################################################
-# Combine
-##################################################
-
+# Kombiner resultater med bind_cols
 scenario_results <- bind_cols(
   scenarier,
   p_churn,

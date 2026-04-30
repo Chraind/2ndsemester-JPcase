@@ -5,7 +5,7 @@ cancellation <- read.csv("data/cancellation.csv")
 subscription <- read.csv("data/subscription_v2.csv", sep = ";")
 
 # Sæt import_date baseret på nyeste data i filen
-import_date <- as.Date("2026-03-10")
+import_date <- as.Date("2026-03-24")
 
 # 2. Behold seneste observation pr. bruger
 cancellation <- cancellation %>%
@@ -57,18 +57,6 @@ model_data <- merged_data %>%
     birthdate   = as.Date(parse_date_time(birthdate, orders = c("dmy", "ymd", "mdy"))),
     usr_created = dmy(usr_created),
     
-    # --- NY LOGIK: Justering af account_active_days ---
-    # Vi finder ud af, hvor mange dage der skal trækkes fra, hvis de stadig er aktive efter kampagnen
-    # Vi bruger pmin for at sikre, at vi ikke tæller dage efter import_date
-    # aktivitet_slut_censored = pmin(replace_na(expiration_date, as.Date("3000-01-01")), import_date),
-    
-    # Beregn overskydende dage (kun hvis aktivitet slutter EFTER last_campaign_day)
-    # dage_at_fjerne = pmax(0, as.numeric(aktivitet_slut_censored - last_campaign_day)),
-    
-    # Opdater variabel (vi sikrer den ikke bliver negativ)
-    # account_active_days = pmax(0, account_active_days - dage_at_fjerne),
-    # --------------------------------------------------
-    
     # Afledte variable
     age = as.numeric(import_date - birthdate) / 365,
     kundetid_dage = as.numeric(order_date - usr_created)
@@ -91,6 +79,8 @@ model_data <- merged_data %>%
     type = fct_na_value_to_level(factor(type), "Ingen afmelding"),
     reason = fct_na_value_to_level(factor(reason), "Ingen afmelding"),
     koen = fct_recode(factor(koen), "Ikke oplyst" = ""),
+    permission_given_order = factor(permission_given_order),
+    permission_given_today = factor(permission_given_today),
     
     permission_given_order = factor(if_else(permission_given_order == "true", 1, 0)),
     permission_given_today = factor(if_else(permission_given_today == "true", 1, 0)),
@@ -114,14 +104,30 @@ model_data <- merged_data %>%
     -order_date,
     -birthdate,
     -usr_created,
-    # -aktivitet_slut_censored,
-    # -dage_at_fjerne
   )
 
 # 5. Tjek resultatet
 glimpse(model_data)
+
+# Overblik over churn
+model_data %>%
+  count(churn) %>%
+  mutate(prop = n / sum(n))
+
 summary(model_data$account_active_days)
 summary(subscription$account_active_days)
+
+model_data %>%
+  count(account_active_days, sort = TRUE) %>%
+  head(20)
+
+model_data %>%
+  group_by(churn) %>%
+  summarise(
+    mean = mean(account_active_days),
+    median = median(account_active_days),
+    sd = sd(account_active_days)
+  )
 
 # Outlier tjek - dem har vi fjernet fra model_data
 outliers <- merged_data %>%
@@ -143,8 +149,6 @@ outliers <- merged_data %>%
 
 # Kig outliers
 glimpse(outliers)
-
-view(model_data)
 
 # Gem data
 saveRDS(model_data, "data/model_data.rds")
