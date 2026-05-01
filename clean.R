@@ -67,7 +67,7 @@ model_data <- merged_data %>%
     !is.na(birthdate),
     !is.na(usr_created),
     !is.na(order_date),
-    previous_trials <= 50,
+    previous_trials <= 100,
     age >= 15,
     age <= 105,
     kundetid_dage >= 0
