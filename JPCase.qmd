@@ -522,7 +522,7 @@ aktive kunder kan få mere relevant indhold eller premium tilbud. På den
 måde kan Jyllands-Posten skabe mere værdi for den enkelte kunde og
 dermed øge sandsynligheden for fastholdelse.
 
-Derudover gør visualiseringerne i Shiny og Power BI det muligt at
+Derudover gør visualiseringerne i Power BI det muligt at
 omsætte analysen til et konkret værktøj for forretningen. I stedet for
 kun at have tekniske modelresultater, får Jyllands Posten et dashboard,
 hvor de kan følge churn, identificere risikokunder og se mønstre i data.
@@ -880,6 +880,8 @@ saveRDS(cluster_mapping, "data/cluster_mapping.rds")
 # Tjek fordelingen
 table(customer_df$cluster_label)
 ```
+
+
 
 ## Churn model
 
@@ -1260,7 +1262,52 @@ print(scenario_results, width = Inf)
 
 ```
 
+### Resultater og indsigt fra modellen
 
+Vi har lavet to tidymodels modeller, en som forudser churn og en som forudser early churn. Vi har visualiseret de mest vigtige features ved hjælp af en Variable Importance-analyse.
+
+Resultaterne viser, at antallet af dage kontoen har været aktiv, er den mest afgørende prædiktor for begge modeller. Derudover spiller historisk engagement, såsom antallet af tidligere kampagner, abonnementer og prøveperioder, en væsentlig rolle. Modtagelse af nyhedsbreve efter bestilling samt kundens alder har ligeledes en mærkbar indflydelse på sandsynligheden for fastholdelse.
+
+### Model 1 Churn
+
+Accuracy (0,771): Modellens overordnede nøjagtighed er på 77,1 %. Det betyder, at modellen rammer rigtigt i mere end 3 ud af 4 tilfælde, når den skal klassificere, om en kunde forlader os eller bliver. 
+ROC-AUC (0,849): Dette er et af de vigtigste tal. En værdi på næsten 0,85 fortæller os, at modellen er rigtig god til at rangere kunderne efter risiko. Der er 85 % sandsynlighed for, at en tilfældig churner får en højere risikoscore end en loyal kunde.
+
+Sensitivitet / Recall (0,792): Modellen finder 79,2 % af alle de faktiske churnere. Det betyder, at vi fanger ca. 8 ud af 10 kunder, der er på vej væk. Dette er afgørende for Jyllands-Posten, da det giver os muligheden for at gribe ind over for langt de fleste potentielle opsigelser.  
+
+Specificitet (0,755): Modellen er også god til at identificere de loyale kunder (75,5 %). Det sikrer, at vi ikke sender for mange dyre fastholdelseskampagner ud til kunder, som alligevel havde tænkt sig at blive.  
+
+F-measure (0,743): Dette tal er et vægtet gennemsnit, der viser balancen mellem præcision og sensitivitet. En værdi på 0,74 bekræfter, at modellen er velafbalanceret og ikke "overfitter" til den ene eller den anden side.  
+
+Vores confusion matrix for Model 1 viser en balanceret præcision med 84 korrekte churn-forudsigelser og 111 korrekte fastholdelser i testsættet. Tjek eventuelt også ROC kurven ovenfor, jo tættere den kommer på øverste venstre hjørne jo bedre, og vores ligner en god model men stadig ikke for urealistisk.
+
+Fem forskellige klassifikationsmodeller blev testet – herunder Decision Tree, Logistisk Regression, SVM, XGBoost og Random Forest. Generelt fik vi de bedste resultater fra XGBoost og Random Forest, måske fordi de er bedre til at håndtere komplekse datamønstre.  
+
+### Model 2: Early churn
+
+Model 2 identificerer "early churn" blandt kunder, der fortsætter efter kampagnen, men falder fra inden for 90 dage. 
+
+Accuracy (0,837): Modellens overordnede nøjagtighed er på 83,7 %. Det betyder, at den rammer rigtigt i over 8 ud af 10 tilfælde, hvilket gør den til et meget pålideligt værktøj til at forudsige adfærd i den kritiske fase efter en kampagne.  
+
+ROC-AUC (0,869): Med en AUC-værdi på næsten 0,87 præsterer Model 2 endnu bedre end Model 1 til at adskille potentielle churnere fra loyale kunder. Der er næsten 87 % sandsynlighed for, at en kunde, der faktisk vil forlade os tidligt, får en højere risikoscore end en kunde, der bliver.  
+
+Sensitivitet / Recall (0,950): Dette er modellens stærkeste punkt. Den fanger hele 95 % af alle de faktiske "early churners". Det betyder, at vi næsten med fuld sikkerhed kan identificere de kunder, der er i farezone for at smutte kort efter kampagnens udløb.
+
+Specificitet (0,596): Modellens evne til præcist at identificere loyale kunder er på 59,6 %. Selvom den er lavere end sensitiviteten, prioriterer modellen her bevidst at "fange for mange" frem for at misse en kunde, der er ved at forlade os.  
+
+F-measure (0,888): Den høje F-værdi på 0,89 understreger, at modellen er særdeles effektiv til denne specifikke opgave, da den formår at balancere præcision og genfinding på et meget højt niveau.  
+
+Ligesom i model 1 sammenlignede vi de fem modeller, men Random Forest viste de bedste resultater. Det kunne tyde på der er mere komplekse mønstre i vores datasæt
+
+### Best, average og worst case scenarier
+
+For at vise modellens værdi har vi opstillet tre scenarier, der illustrerer den samlede risiko for en kunde, beregnet som kombinationen af risikoen for umiddelbart churn og early churn.  
+
+Worst Case: En ung bruger (22 år) i segmentet "Mobil-nykommeren" med kun 5 dages aktivitet har en estimeret churn-risiko på hele 99,6 %. Her er behovet for øjeblikkelig intervention kritisk. 
+
+Average Case: En midaldrende mandlig bruger (45 år), der har været aktiv i over 6 måneder, men har en høj historik af prøveperioder, lander på en moderat risiko på 66,5 %.  
+
+Best Case: En ældre, loyal "Veteran" (70 år) med over 2.000 aktive dage og alle permissions givet har en lav risiko på 33,7 %.  
 
 ## Neural network churn model
 
