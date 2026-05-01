@@ -43,7 +43,7 @@ model_data_clean <- model_data %>%
   ) %>%
   mutate(churn = factor(churn, levels = c("1", "0")))
 
-# Check that cluster_label is present
+# Tjek data
 glimpse(model_data_clean)
 
 # Churn fordeling
@@ -190,9 +190,8 @@ final_fit %>%
   labs(title = "What Drives Churn?",
        subtitle = "Variables ranked by Importance (Random Forest)")
 
-##################################################
-# 🔹 MODEL 2: EARLY CHURN (TASK 3)
-##################################################
+
+# MODEL 2: EARLY CHURN
 
 # Only customers who continued
 early_data <- model_data_clean %>%

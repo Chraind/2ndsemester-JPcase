@@ -49,7 +49,7 @@ merged_data <- subscription %>%
     )
   )
 
-# 4. Feature engineering + rensning + JUSTERING AF AKTIVE DAGE
+# 4. Feature engineering
 model_data <- merged_data %>%
   mutate(
     # Parse datoer
