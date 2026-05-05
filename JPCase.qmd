@@ -3,7 +3,7 @@ lang: da
 format:
   pdf:
     documentclass: article
-    toc: false
+    toc: true
     toc-title: Indholdsfortegnelse
     toc-depth: 3
     number-sections: true
@@ -11,13 +11,15 @@ format:
     titlepage: true
     lof: false
     lot: false
-# bibliography: VFF_projekt.bib
+bibliography: JPCase.bib
+nocite: |
+  @*
 header-includes:
   - \usepackage[a4paper, top=30mm, bottom=30mm, left=20mm, right=20mm, heightrounded]{geometry}
   - \usepackage{booktabs}
   - \usepackage{makecell}
   - \usepackage{pdfpages}
-#  - \AtBeginDocument{\includepdf[pages={1}]{vff_forside.pdf}}
+  - \AtBeginDocument{\includepdf[pages={1}]{JPCase_forside.pdf}}
 crossref:
   fig-prefix: ""
   sec-prefix: ""
@@ -73,7 +75,7 @@ behavior.csv: kundeadfærd i kampagneperioden
 
 Cancellation.csv:churn‑label + begrundelser
 
-Subscription.csv: abonnements‑ og kampagneinfo
+Subscription_v2.csv: abonnements‑ og kampagneinfo
 
 # Datajura
 
@@ -83,7 +85,7 @@ lovligt og ansvarligt. De nye oplysninger fra JP/Politikens Hus viser,
 at data kan indgå i flere sammenhænge, fx abonnement, brugeradfærd,
 annoncering, kampagnestyring og målretning. Derfor er det vigtigt at
 have styr på behandlingsgrundlag, samtykke, fælles dataansvar og
-sikkerhed (JP/Politikens Hus, 2025).
+sikkerhed @jppol2025.
 
 # GDPR og etik
 
@@ -101,7 +103,7 @@ former for databehandling de accepterer. Samtykke er især vigtigt, hvis
 data bruges til profilering, målretning eller personaliserede annoncer.
 Hvis der bruges legitim interesse, skal det kunne begrundes, og der skal
 laves en vurdering af virksomhedens interesse over for brugerens
-rettigheder (JP/Politikens Hus, 2025).
+rettigheder @jppol2025.
 
 Derudover gælder princippet om dataminimering jf. artikel 5 i GDPR. Det
 betyder, at Jyllands-Posten kun må bruge de data, der er nødvendige for
@@ -111,13 +113,13 @@ data med, fordi de findes. Samtidig gælder formålsbegrænsning jf.
 artikel 5, som betyder, at data kun må bruges til det formål, de er
 indsamlet til. Hvis data fx er indsamlet til abonnementshåndtering, kan
 de ikke uden videre bruges til avanceret profilering uden et gyldigt
-grundlag (JP/Politikens Hus, 2025).
+grundlag @jppol2025.
 
 Kunderne har også rettigheder efter GDPR jf. artikel 13-22. De har fx
 ret til indsigt, sletning, berigtigelse og i nogle tilfælde
 dataportabilitet. Det betyder, at Jyllands-Posten skal have systemer og
 processer, der kan håndtere, hvis en kunde ønsker at se eller få slettet
-sine data (JP/Politikens Hus, 2025).
+sine data @jppol2025.
 
 ## Fælles dataansvar
 
@@ -126,19 +128,19 @@ arbejder med fælles dataansvar jf. artikel 26 i GDPR. Det betyder, at
 JPPOL og en annoncør eller et mediebureau sammen kan være ansvarlige for
 bestemte dele af databehandlingen. Det sker fx, når en annoncør køber
 annoncering på JPPOL-sites og bruger egne eller tredjeparts teknologier
-til at indsamle data om brugere (JP/Politikens Hus, 2025).
+til at indsamle data om brugere @jppol2025.
 
 Her er ansvarsfordelingen vigtig. JPPOL er ansvarlig for, at der findes
 et gyldigt behandlingsgrundlag, og at brugerne får information om
 behandlingen. Indkøberen eller annoncøren er ansvarlig for den videre
 behandling af data, efter at data er blevet sendt videre. Det betyder,
 at begge parter har ansvar, men ikke nødvendigvis for det samme
-(JP/Politikens Hus, 2025).
+@jppol2025.
 
 Hvis en bruger henvender sig om sine rettigheder, skal parterne kunne
 sende henvendelsen videre til den rigtige part hurtigst muligt og senest
 inden for 72 timer. Det viser, at dataansvar ikke kun handler om regler,
-men også om klare processer i praksis (JP/Politikens Hus, 2025).
+men også om klare processer i praksis @jppol2025.
 
 ## AI etik og lovgivning
 
@@ -177,13 +179,13 @@ arbejder med mange abonnent- og brugerdata, skal de beskytte data mod
 datalæk og uautoriseret adgang. I retningslinjerne fremgår det, at der
 skal bruges passende tekniske og organisatoriske foranstaltninger jf.
 artikel 32 i GDPR. Det gør de ved pseudonymisering, adgangsstyring og
-løbende test af sikkerheden (JP/Politikens Hus, 2025).
+løbende test af sikkerheden @jppol2025.
 
 Det handler også om at sikre fortrolighed. Data skal være beskyttet, de
 må ikke ændres forkert, og systemerne skal kunne fungere stabilt. Hvis
 der sker et databrud, skal den part, hvis sikkerhed er berørt, anmelde
 bruddet til Datatilsynet jf. artikel 33, og i nogle tilfælde informere
-brugerne jf. artikel 34 (JP/Politikens Hus, 2025).
+brugerne jf. artikel 34 @jppol2025.
 
 ## Databehandlere og tredjepartsteknologier
 
@@ -197,50 +199,9 @@ GDPR, og at leverandørerne kan leve op til reglerne (JP/Politikens Hus,
 Derudover fremgår det, at JPPOL-data ikke må kopieres til egne systemer
 eller bruges på andre sites end JPPOL-sites. Det er vigtigt, fordi det
 beskytter JPPOL’s førstepartsdata og mindsker risikoen for, at data
-bliver brugt uden for det oprindelige formål (JP/Politikens Hus, 2025).
+bliver brugt uden for det oprindelige formål @jppol2025.
 
-# Databehandling TODO
-
-Der starts med at rense og klargøres data, så vi har et Datasæt for
-Jyllands Postens abonnementsdata der er klar til udvilkingen af en
-Machine Learning model.
-
-Først indlæser vi de nødvendige pakker og de udleveret datasæt, hvor vi
-arbejder med både abonnementsdata, afmeldingsdata og affærsdata.
-Herefter sørger vi for, at hver kunde kun optræder én gang ved at fjerne
-dubletter på pseudo_id. Det gør vi for at undgå fejl i analysen og
-sikre, at hver observation repræsenterer én kunde.
-
-Derefter fletter vi datasættene sammen, så vi får alle relevante
-informationer samlet ét sted. Samtidig omdanner vi datoer til rigtige
-datoformater, så de kan bruges korrekt i beregninger. Det er vigtigt,
-fordi datoerne bruges til at definere churn.
-
-Herefter laver vi de vigtigste variable. Først definerer vi churn, som
-viser, om kunden ikke fortsætter efter kampagnen. Hvis abonnementet
-stopper før eller ved kampagnens slutdato, er det churn. Hvis det
-fortsætter, er det ikke churn. Derefter laver vi continued_subscription,
-som bare er det modsatte af churn. Til sidst laver vi early_churn, som
-viser de kunder, der godt nok fortsætter, men opsiger kort tid efter.
-Her har vi sat grænsen til 90 dage efter kampagnen.
-
-Efter det går vi i gang med datarensning og feature engineering. Vi
-fjerner pseudo_id, fordi det kun er en identifikator. Vi omdanner datoer
-og fjerner rækker med manglende værdier, så vi arbejder med valide data.
-Samtidig gør vi kategoriske variable som fx køn og afmeldingsårsag klar
-som faktorer. Manglende værdier bliver erstattet med ikke oplyst, så
-data stadig giver mening.
-
-Derudover laver vi nye variable som alder og kundetid, som kan være
-vigtige for at forklare churn. Kundetid bliver også opdelt i grupper, så
-det er lettere at analysere. Til sidst fjerner vi de variable, vi ikke
-længere har brug for.
-
-Til sidst tjekker vi datasættet og ser på fordelingen af churn og de
-andre variable. Til sidst gemmer vi det rensede datasæt i en RDS fil, så
-det er klar til videre analyse og modellering.
-
-## Machine learning modellen
+# Machine learning modellen
 
 I denne del af projektet har vi udviklet to Machine Learning-modeller,
 som tager udgangspunkt i Jyllands-Postens forretningsproblem omkring
@@ -415,88 +376,58 @@ model i forhold til Jyllands-Postens forretningsbehov.
 
 # Datavisualisering
 
-I dette projekt spiller datavisualisering en central rolle, fordi det er
-med til at omsætte vores analyser og modeller til noget, Jyllands-Posten
-rent faktisk kan bruge i praksis. Når man arbejder med churn,
-kundeadfærd og segmentering, kan resultaterne hurtigt blive tekniske og
-svære at læse direkte ud fra tabeller eller modeloutput. Derfor bruger
-vi både Shiny og Power BI til at visualisere data, så resultaterne
-bliver mere overskuelige, interaktive og lettere at formidle til
-virksomheden.
+Dashboardet er udviklet med det formål at give ledelsen og
+abonnementssælgerne et datadrevet overblik over churn og kundeadfærd.
+Visualiseringen kombinerer flere forskellige diagramtyper i Power BI,
+som tilsammen giver både overblik, segmentering og mulighed for at
+arbejde mere proaktivt med kunderne.
 
-I vores kode arbejder vi med flere forskellige typer visualiseringer alt
-efter, hvad vi gerne vil undersøge. I adfærdsanalysen bruger vi fx
-histogrammer til at undersøge fordelingen af variabler som antal besøg,
-scroll depth og antal unikke sider. Formålet med histogrammerne er at få
-et overblik over, hvordan data fordeler sig, og om der fx er skævheder,
-outliers eller meget store forskelle mellem kunderne. Det er vigtigt i
-en tidlig fase, fordi det giver en bedre forståelse af datasættet og
-hjælper os med at vurdere, hvordan data skal behandles videre.
+Centralt i dashboardet anvendes KPI cards, som viser nøgleindikatorer
+såsom den samlede churn rate samt andre centrale målepunkter. Disse
+giver brugeren et hurtigt overblik over performance og fungerer som et
+“high-level” beslutningsgrundlag.
 
-Derudover bruger vi boxplots til at sammenligne forskelle mellem de
-kundeklynger, vi finder i vores segmentering. I koden laver vi fx
-boxplots for n_visits, avg_scroll, share_mobile og share_search fordelt
-på de klynger, der er fundet med k-means. De diagrammer er gode, fordi
-de ikke bare viser gennemsnit, men også spredning, median og eventuelle
-outliers. Det gør det lettere at se, om en bestemt klynge fx har højere
-aktivitet, større mobilandel eller mere trafik fra search end de andre
-grupper. På den måde bliver det nemmere at lave profiler af
-kundetyperne.
+Til at visualisere fordelingen af churn anvendes både bar charts og pie
+charts. Bar charts bruges til at sammenligne churn på tværs af
+forskellige segmenter, såsom målgrupper, køn og aldersgrupper, hvilket
+gør det nemt at identificere forskelle mellem segmenter. Pie charts
+anvendes til at vise den procentvise fordeling mellem kunder, der
+churner, og kunder, der fortsætter, hvilket giver et hurtigt visuelt
+overblik over datasættets sammensætning.
 
-Vi bruger også PCA som en del af visualiseringen. Her laver vi først en
-standardisering af data og derefter en Principal Component Analysis, så
-vi kan reducere antallet af variable og samle informationen i færre
-komponenter. Til dette bruger vi blandt andet screeplots og biplots.
-Screeplottet hjælper os med at vurdere, hvor mange komponenter der giver
-mening at arbejde videre med, fordi det viser, hvor meget variation hver
-komponent forklarer. Biplottet gør det muligt at se relationen mellem
-observationer og variable i et reduceret rum, hvilket giver en visuel
-forståelse af, hvordan kundeadfærden hænger sammen. Det er især nyttigt
-før klyngeanalysen, fordi vi kan få en idé om, om der faktisk er
-naturlige grupper i data.
+Derudover anvendes et måler chart (gauge chart), som illustrerer churn
+rate i forhold til en ønsket målsætning. Dette gør det muligt for
+ledelsen hurtigt at vurdere, om virksomheden performer over eller under
+det ønskede niveau.
 
-I forhold til selve segmenteringen bruger vi også visualisering i
-forbindelse med hierarkisk clustering. Her plotter vi dendrogrammet fra
-hclust, så vi kan se, hvordan kunderne grupperer sig, og hvor det giver
-mening at skære træet for at få et bestemt antal klynger. Det er med til
-at underbygge, hvorfor vi vælger fx 3 klynger i vores videre analyse.
+Dashboardet indeholder også et bottleneck chart, som bruges til at
+identificere, hvor i kunderejsen eller i segmenteringen der sker de
+største tab af kunder. Dette giver indsigt i, hvor indsatsen bør
+fokuseres for at reducere churn.
 
-Når vi går fra analyse til formidling, bruger vi Shiny til at gøre
-visualiseringerne interaktive. Det betyder, at brugeren selv kan vælge
-variable, filtre og visninger. Det gør løsningen mere fleksibel, fordi
-Jyllands-Posten ikke bare ser et statisk billede, men selv kan udforske
-data. I Shiny kan man fx forestille sig, at brugeren vælger en bestemt
-kundeklynge og derefter ser udviklingen i churn, fordeling af adfærd
-eller forskelle i abonnementsmønstre. Det giver meget mere værdi end en
-fast rapport, fordi virksomheden selv kan stille spørgsmål til data og
-få svar med det samme.
+En central del af visualiseringen er klyngeanalysen, hvor kunderne er
+opdelt i datadrevne målgrupper (cluster_labels). Disse segmenter
+visualiseres og kan analyseres direkte i dashboardet, hvilket gør det
+muligt at identificere hvilke kundetyper der har høj churn, og hvilke
+der er mere loyale.
 
-Power BI bruger vi mere til dashboards og ledelsesoverblik. Hvor Shiny
-er god til interaktiv analyse, er Power BI stærk til at samle KPI’er og
-vigtige resultater i et mere forretningsorienteret format. Her kan vi fx
-vise churn-rate, andel continued subscription, early churn,
-segmentfordelinger og udviklinger over tid i et dashboard. Vi kan også
-bruge slicers og filtre, så Jyllands-Posten kan se resultater for
-bestemte kundegrupper eller perioder. Diagrammer i Power BI kan fx være
-søjlediagrammer til at sammenligne churn mellem segmenter,
-linjediagrammer til udvikling over tid og kort eller tabeller til at
-vise mere detaljeret information.
+Derudover er der integreret en machine learning model, som estimerer
+sandsynligheden for, at en kunde vil churne. Resultaterne fra modellen
+visualiseres i dashboardet og giver en prædiktiv dimension, hvor
+virksomheden kan identificere risikokunder, før de faktisk opsiger deres
+abonnement.
 
-Det vigtige er derfor ikke kun, at vi visualiserer data, men også
-hvordan vi gør det. Histogrammer hjælper os med at forstå fordelingen i
-data. Boxplots hjælper os med at sammenligne grupper. Screeplots,
-biplots og dendrogrammer hjælper os med at forstå vores PCA og
-klyngeanalyse. Shiny giver mulighed for interaktiv udforskning, mens
-Power BI giver et hurtigt og professionelt overblik over de vigtigste
-resultater.
+Dashboardet er opbygget interaktivt med mulighed for at filtrere og
+klikke på tværs af segmenter såsom målgrupper, køn og alder. Dette gør
+det muligt at dykke ned i specifikke kundesegmenter og opnå en dybere
+forståelse af churn-mønstre.
 
-Samlet set er datavisualisering en meget vigtig del af projektet, fordi
-det binder analyse og forretning sammen. Det gør vores resultater mere
-forståelige og mere anvendelige for Jyllands-Posten. Ved at kombinere
-kodebaserede visualiseringer i R med interaktive løsninger i Shiny og
-dashboards i Power BI får vi både en analytisk og en praktisk måde at
-arbejde med resultaterne på. Det gør, at vores projekt ikke kun viser,
-hvad modellen kan, men også hvordan indsigterne kan bruges i praksis.
+Samlet set kombinerer dashboardet flere visualiseringstyper – herunder
+KPI cards, bar charts, pie charts, gauge chart og bottleneck chart –
+samt avancerede analyser som klyngeanalyse og machine learning. Dette
+skaber et stærkt beslutningsværktøj, der gør det muligt for både
+ledelsen og abonnementssælgerne at arbejde mere målrettet og datadrevet
+med at reducere churn.
 
 ## Evaluering af forretningsmæssige fordele
 
@@ -522,13 +453,13 @@ aktive kunder kan få mere relevant indhold eller premium tilbud. På den
 måde kan Jyllands-Posten skabe mere værdi for den enkelte kunde og
 dermed øge sandsynligheden for fastholdelse.
 
-Derudover gør visualiseringerne i Power BI det muligt at
-omsætte analysen til et konkret værktøj for forretningen. I stedet for
-kun at have tekniske modelresultater, får Jyllands Posten et dashboard,
-hvor de kan følge churn, identificere risikokunder og se mønstre i data.
-et gør løsningen anvendelig for ikke-tekniske brugere og understøtter
-bedre beslutningstagning. Ud fra det kan det konkluderes, at Jyllands
-Posten kan arbejde mere datadrevet med både fastholdelse og fremtidige
+Derudover gør visualiseringerne i Power BI det muligt at omsætte
+analysen til et konkret værktøj for forretningen. I stedet for kun at
+have tekniske modelresultater, får Jyllands Posten et dashboard, hvor de
+kan følge churn, identificere risikokunder og se mønstre i data. et gør
+løsningen anvendelig for ikke-tekniske brugere og understøtter bedre
+beslutningstagning. Ud fra det kan det konkluderes, at Jyllands Posten
+kan arbejde mere datadrevet med både fastholdelse og fremtidige
 kampagner. I stedet for at fokusere på volumen af nye abonnenter, kan de
 i højere grad fokusere på kvaliteten af kunderne og deres langsigtede
 værdi. Dette kan være med til at reducere churn, øge kundeloyaliteten og
@@ -655,21 +586,6 @@ model_data %>%
   count(churn) %>%
   mutate(prop = n / sum(n))
 
-summary(model_data$account_active_days)
-summary(subscription$account_active_days)
-
-model_data %>%
-  count(account_active_days, sort = TRUE) %>%
-  head(20)
-
-model_data %>%
-  group_by(churn) %>%
-  summarise(
-    mean = mean(account_active_days),
-    median = median(account_active_days),
-    sd = sd(account_active_days)
-  )
-
 # Outlier tjek - dem har vi fjernet fra model_data
 outliers <- merged_data %>%
   mutate(
@@ -695,6 +611,107 @@ glimpse(outliers)
 saveRDS(model_data, "data/model_data.rds")
 
 ```
+
+Datarensning
+
+Formålet med datarensningen er at skabe et konsistent, veldokumenteret
+og reproducerbart datasæt, som kan anvendes direkte i den efterfølgende
+churn model. Processen er opdelt i fire trin, som bygger logisk videre
+på hinanden.
+
+Trin 1
+
+I første trin indlæses de to datafiler cancellation.csv og
+subscription_v2.csv. Samtidig oprettes variablen import_date med datoen
+2026 03 24, som er den dato, hvor data er eksporteret fra Jyllands
+Posten. Denne dato gemmes eksplicit for at sikre reproducerbarhed og
+bruges senere som reference i beregninger, fx ved udregning af alder.
+
+Trin 2
+
+En udfordring i data er, at en bruger kan have afmeldt sig og
+genabonneret flere gange. Det betyder, at datasættet kan indeholde flere
+rækker for samme bruger ID. Da analysen fokuserer på den aktuelle churn
+status, filtreres der, så kun det seneste abonnement pr. bruger bevares.
+Dette sikrer, at hver bruger kun optræder én gang i datasættet.
+
+Trin 3
+
+De to datasæt samles herefter med et left_join på bruger ID, så alle
+abonnenter bevares, også selvom de aldrig har opsagt deres abonnement.
+Alle dato kolonner konverteres samtidig til korrekt datoformat for at
+sikre konsistente beregninger.
+
+Churn defineres ved hjælp af case_when() ud fra følgende logik:
+
+Hvis expiration_date er NA, har brugeren aldrig opsagt → churn = 0
+
+Hvis expiration_date er før eller lig med kampagnens slutdato → churn =
+1
+
+Hvis expiration_date ligger efter kampagnens slutdato → churn = 0
+
+Variablen continued_subscription defineres som det inverse af churn og
+anvendes til afledte analyser.
+
+Derudover defineres early_churn, som kun kan være 1 for brugere, der
+ellers fortsætter abonnementet. Early churn defineres konkret som
+opsigelse inden for 90 dage efter kampagnens slutdato. Alle churnede
+brugere får automatisk værdien 0.
+
+Trin 4
+
+Variablen order_date indeholder både dato og klokkeslæt og parses derfor
+med ymd_hms(), hvorefter klokkeslættet fjernes, så kun datoen bevares.
+birthdate parses med en fleksibel dato parser, da formatet er konsistent
+i data.
+
+På baggrund af disse datoer konstrueres to nye variable:
+
+Alder, beregnet som antal dage fra fødselsdato til import_date,
+divideret med 365
+
+Kundetid_dage, beregnet som antal dage fra brugeroprettelse til første
+ordre
+
+Herefter foretages en række filtreringer for at sikre datakvalitet:
+
+Rækker med manglende kritiske datoer fjernes
+
+Observationer med mere end 100 tidligere forsøgsabonnementer ekskluderes
+
+Alder filtreres til intervallet 15–105 år
+
+Observationer hvor ordre er placeret før brugeroprettelse fjernes
+
+Manglende værdier i type og reason (som kun forekommer for brugere, der
+aldrig har afmeldt sig) omkodes til kategorien "ingen afmelding", så
+modellen kan behandle dem som en selvstændig gruppe. Tomme værdier i køn
+omkodes til "ikke oplyst". permission_given\_\* variable konverteres til
+faktorer.
+
+For abonnementer uden udløbsdato erstattes expiration_date med år 3000,
+som en teknisk markør for "ingen udløbsdato", uden at introducere NA,
+som kan skabe problemer i modelleringen.
+
+kundetid_dage grupperes i fire kategorier i stedet for at fastholdes som
+en præcis numerisk værdi. Det gør modellen mere robust over for
+outliers. Til sidst fjernes de rå dato variable samt kundetid_dage, da
+de nu er erstattet af afledte features.
+
+Trin 5
+
+Som afslutning på datarensningen undersøges fordelingen af churn med
+count(churn) og procentandele. Dette gøres for at vurdere, om datasættet
+er skævt fordelt, da en kraftig ubalance kan påvirke modellens læring.
+
+De observationer, der blev fjernet under rensningen, samles i objektet
+outliers. Disse bruges ikke i modellen, men undersøges separat for at
+afgøre, om de skyldes tilfældige fejl eller systematiske mønstre i data.
+
+Til sidst gemmes det rensede datasæt som en RDS fil, så det kan anvendes
+direkte i de efterfølgende modeller uden tab af datatyper eller
+struktur.
 
 ## Klyngeanalyse
 
@@ -747,33 +764,21 @@ customer_df <- customer_df %>%
     ~replace_na(.x, 0)
   ))
 
-# check om vi har NA værdier
-colSums(is.na(customer_df))
-
 # Nu fjerner vi pseudo_ID
 cluster_input <- customer_df %>%
   select(-pseudo_id, -churn) 
 
-# Tjek data som ryger ind i modellen
-glimpse(cluster_input)
-
-# Tjek eventuelt histogram over tallene
-plot_histogram(cluster_input)
+# Tjek eventuelt histogram over tallene i bilag 1
 
 # Kør scale til klyngeanalysen
 customer_scaled <- scale(cluster_input)
 
-# Principal component analyse
+# Principal component analyse - kig summary i bilag 1
 pca <- prcomp(customer_scaled, scale = TRUE)
 
-summary(pca)
+# Se PCA plot i bilag 1
 
-screeplot(pca, type = "line")
-abline(h = 1, col = "red", lty = 3)
-
-biplot(pca, scale = 0)
-
-# Hierakisk clustering
+# Hierakisk clustering - kig dendogram i bilag 1
 
 # hc_complete <- hclust(dist(pca$x[,1:4]), method = "complete")
 # plot(hc_complete)
@@ -786,7 +791,6 @@ biplot(pca, scale = 0)
 # table(customer_df$cluster_hc)
 
 hc_ward <- hclust(dist(pca$x[,1:4]), method = "ward.D2")
-plot(hc_ward)
 
 customer_df <- customer_df %>%
   filter(complete.cases(select(., -pseudo_id, -churn)))
@@ -814,29 +818,7 @@ cluster_profile <- customer_df %>%
   group_by(cluster_km) %>%
   summarise(across(where(is.numeric), mean, na.rm = TRUE))
 
-# Visualisering
-ggboxplot(customer_df, x = "cluster_km", y = "n_visits",
-          color = "cluster_km")
-
-ggboxplot(customer_df, x = "cluster_km", y = "avg_scroll",
-          color = "cluster_km")
-
-ggboxplot(customer_df, x = "cluster_km", y = "account_active_days",
-          color = "cluster_km")
-
-ggboxplot(customer_df, x = "cluster_km", y = "previous_subscriptions",
-          color = "cluster_km")
-
-# ANOVA tests
-summary(aov(n_visits ~ cluster_km, data = customer_df))
-summary(aov(avg_scroll ~ cluster_km, data = customer_df))
-
-summary(aov(account_active_days ~ cluster_km, data = customer_df))
-summary(aov(previous_subscriptions ~ cluster_km, data = customer_df))
-summary(aov(previous_campaigns ~ cluster_km, data = customer_df))
-summary(aov(previous_trials ~ cluster_km, data = customer_df))
-summary(aov(newsletters_before_order ~ cluster_km, data = customer_df))
-summary(aov(newsletters_after_order ~ cluster_km, data = customer_df))
+# Tjek ggplot visualiseringer og ANOVA tests i bilag 1
 
 # Churn analyse
 churn_by_cluster <- customer_df %>%
@@ -881,7 +863,95 @@ saveRDS(cluster_mapping, "data/cluster_mapping.rds")
 table(customer_df$cluster_label)
 ```
 
+PCA er anvendt til dimensionsreduktion ved at omdanne de 14 oprindelige
+variable til ukorrelerede hovedkomponenter, som er rangeret efter den
+andel af den samlede varians, de forklarer. Scree-plottet viser, at de
+første fem principalkomponenter har egenværdier over 1. Derudover ses et
+markant fald i kurvens hældning efter den sjette komponent. De første
+fem hovedkomponenter forklarer således størstedelen af den samlede
+varians og danner derfor grundlaget for den efterfølgende klyngeanalyse.
+Biplottet bekræfter, at observationerne fordeler sig som forventet langs
+de to første principalkomponenter, PC1 og PC2. Der ses en tydelig
+adskillelse mellem besøgsadfærd, enhedspræferencer og historiske
+variabler, hvilket understøtter, at PCA-løsningen er analytisk
+velfungerende.
 
+Hierarkisk clustering
+
+Den hierarkiske clustering er gennemført ved anvendelse af
+Ward.D2-metoden på de fem første principalkomponenter. Metoden er valgt,
+da den har fokus på at minimere variationen inden for klyngerne ved
+hvert sammenlægningsskridt og derfor typisk resulterer i relativt
+kompakte og veldefinerede segmenter. Dendrogrammet er anvendt til at
+vurdere det naturlige antal klynger i datasættet og peger på, at en
+opdeling i fem klynger giver den mest meningsfulde løsning.
+
+K-means clustering
+
+På baggrund af den hierarkiske analyse er der efterfølgende gennemført
+en K-means clustering med k=5. For at sikre en stabil løsning er
+algoritmen kørt med 20 tilfældige startpunkter, hvilket reducerer
+risikoen for konvergens mod et lokalt minimum. En sammenligning mellem
+K-means løsningen og den hierarkiske clustering viser høj
+overensstemmelse i fire ud af fem klynger, hvilket indikerer at
+segmenteringen er robust på tværs af metoder.
+
+Klyngeprofilering
+
+For at opnå en klar forståelse af de fem identificerede segmenter er der
+beregnet gennemsnitsværdier for alle numeriske variabler inden for hver
+klynge. Disse klyngeprofiler er efterfølgende visualiseret ved hjælp af
+boxplots for de mest adskillende variabler, herunder besøgsfrekvens,
+scrolldybde, kontodage og tidligere abonnementer. Visualiseringerne
+giver et intuitivt overblik over både niveauet og variationen i
+brugeradfærd inden for hvert segment.
+
+Boxplottene viser, at klynge 1 adskiller sig tydeligt ved en høj og
+relativt varieret besøgsfrekvens, hvilket indikerer et segment med
+intensiv og uensartet brug af platformen. Klynge 4 og 5 udviser derimod
+meget lav aktivitet på tværs af variablerne. Den brede spredning i
+klynge 3 afspejler et mere heterogent segment med stor variation i både
+besøgsintensitet og historik. For scrolldybde har klynge 5 den laveste
+gennemsnitsværdi, hvilket harmonerer med segmentets generelt lave
+engagement. Klynge 3 skiller sig samtidig markant ud i forhold til
+tidligere abonnementer, hvilket understreger den lange historik som et
+centralt kendetegn ved dette segment.
+
+For yderligere at validere, om de observerede forskelle mellem
+segmenterne er statistisk holdbare, er der gennemført ensidede
+variansanalyser (ANOVA) for alle inkluderede variabler med
+klyngetilhørsforhold som grupperende faktor. Resultaterne viser, at alle
+otte variabler adskiller sig statistisk signifikant på tværs af
+klyngerne (p \< 0,001). Især besøgsfrekvens, tidligere abonnementer og
+tidligere trials udviser markante forskelle mellem segmenterne, mens
+scrolldybde og antal modtagne nyhedsbreve ligeledes bidrager til
+adskillelsen, omend i mindre grad. Samlet set bekræfter både
+klyngeprofilerne og ANOVA-resultaterne, at de fem segmenter
+repræsenterer systematiske og meningsfulde forskelle i brugeradfærd og
+dermed udgør et solidt grundlag for videre analyse og fortolkning.
+
+Churn-analyse
+
+For at undersøge segmenternes relation til kundefrafald er churn-raten
+beregnet som andelen af kunder inden for hvert segment, der har churnet
+i observationsperioden. På baggrund af klyngeprofilerne er de fem
+segmenter tildelt navngivne labels, der afspejler deres dominerende
+adfærdsmæssige kendetegn: Power-brugeren, Desktop-traditionalisten,
+Veteranen, Mobil-nykommeren og Spøgelses-brugeren.
+
+Churn-raten varierer på tværs af segmenterne, og Veteranen udviser den
+højeste frafaldrate. Dette er bemærkelsesværdigt, da segmentet har den
+mest intensive historik med platformen målt på tidligere abonnementer,
+kampagner og trials. Det kan indikere, at gentagen prøveadfærd ikke
+konverterer til et stabilt og fastholdt abonnement, og at segmentet er
+præget af kunder med lav loyalitet på trods af høj eksponering.
+Power-brugeren udviser ligeledes en høj churn-rate trods intenst
+engagement, hvilket peger på, at høj aktivitet ikke nødvendigvis er
+ensbetydende med fastholdelse. Mobil-nykommeren har den laveste
+churn-rate, hvilket kan afspejle, at nyere kunder endnu befinder sig i
+en tidlig fase af deres kunderejse. Klynge-labelsmappingen er gemt og
+videreføres som input til den efterfølgende prædiktive modellering i
+Tidymodels.
 
 ## Churn model
 
@@ -933,11 +1003,6 @@ model_data_clean <- model_data %>%
 
 # Tjek data
 glimpse(model_data_clean)
-
-# Churn fordeling
-model_data_clean %>%
-  count(churn) %>%
-  mutate(prop = n / sum(n))
 
 # Gem data
 saveRDS(model_data_clean, "data/model_data_clean.rds")
@@ -1075,8 +1140,8 @@ final_fit %>%
   extract_fit_parsnip() %>% 
   vip(num_features = 20) +
   theme_minimal() +
-  labs(title = "What Drives Churn?",
-       subtitle = "Variables ranked by Importance (Random Forest)")
+  labs(title = "Hvad driver Churn?",
+       subtitle = "Kolonner rangeret efter vigtighed (Random Forest)")
 
 
 # MODEL 2: EARLY CHURN
@@ -1264,73 +1329,281 @@ print(scenario_results, width = Inf)
 
 ### Resultater og indsigt fra modellen
 
-Vi har lavet to tidymodels modeller, en som forudser churn og en som forudser early churn. Vi har visualiseret de mest vigtige features ved hjælp af en Variable Importance-analyse.
+Vi har lavet to tidymodels modeller, en som forudser churn og en som
+forudser early churn. Vi har visualiseret de mest vigtige features ved
+hjælp af en Variable Importance-analyse.
 
-Resultaterne viser, at antallet af dage kontoen har været aktiv, er den mest afgørende prædiktor for begge modeller. Derudover spiller historisk engagement, såsom antallet af tidligere kampagner, abonnementer og prøveperioder, en væsentlig rolle. Modtagelse af nyhedsbreve efter bestilling samt kundens alder har ligeledes en mærkbar indflydelse på sandsynligheden for fastholdelse.
+Resultaterne viser, at antallet af dage kontoen har været aktiv, er den
+mest afgørende prædiktor for begge modeller. Derudover spiller historisk
+engagement, såsom antallet af tidligere kampagner, abonnementer og
+prøveperioder, en væsentlig rolle. Modtagelse af nyhedsbreve efter
+bestilling samt kundens alder har ligeledes en mærkbar indflydelse på
+sandsynligheden for fastholdelse.
 
 ### Model 1 Churn
 
-Accuracy (0,771): Modellens overordnede nøjagtighed er på 77,1 %. Det betyder, at modellen rammer rigtigt i mere end 3 ud af 4 tilfælde, når den skal klassificere, om en kunde forlader os eller bliver. 
-ROC-AUC (0,849): Dette er et af de vigtigste tal. En værdi på næsten 0,85 fortæller os, at modellen er rigtig god til at rangere kunderne efter risiko. Der er 85 % sandsynlighed for, at en tilfældig churner får en højere risikoscore end en loyal kunde.
+Accuracy (0,771): Modellens overordnede nøjagtighed er på 77,1 %. Det
+betyder, at modellen rammer rigtigt i mere end 3 ud af 4 tilfælde, når
+den skal klassificere, om en kunde forlader os eller bliver. 
 
-Sensitivitet / Recall (0,792): Modellen finder 79,2 % af alle de faktiske churnere. Det betyder, at vi fanger ca. 8 ud af 10 kunder, der er på vej væk. Dette er afgørende for Jyllands-Posten, da det giver os muligheden for at gribe ind over for langt de fleste potentielle opsigelser.  
+ROC-AUC (0,849): Dette er et af de vigtigste tal. En værdi på næsten 0,85
+fortæller os, at modellen er rigtig god til at rangere kunderne efter
+risiko. Der er 85 % sandsynlighed for, at en tilfældig churner får en
+højere risikoscore end en loyal kunde.
 
-Specificitet (0,755): Modellen er også god til at identificere de loyale kunder (75,5 %). Det sikrer, at vi ikke sender for mange dyre fastholdelseskampagner ud til kunder, som alligevel havde tænkt sig at blive.  
+Sensitivitet / Recall (0,792): Modellen finder 79,2 % af alle de
+faktiske churnere. Det betyder, at vi fanger ca. 8 ud af 10 kunder, der
+er på vej væk. Dette er afgørende for Jyllands-Posten, da det giver os
+muligheden for at gribe ind over for langt de fleste potentielle
+opsigelser.
 
-F-measure (0,743): Dette tal er et vægtet gennemsnit, der viser balancen mellem præcision og sensitivitet. En værdi på 0,74 bekræfter, at modellen er velafbalanceret og ikke "overfitter" til den ene eller den anden side.  
+Specificitet (0,755): Modellen er også god til at identificere de loyale
+kunder (75,5 %). Det sikrer, at vi ikke sender for mange dyre
+fastholdelseskampagner ud til kunder, som alligevel havde tænkt sig at
+blive.
 
-Vores confusion matrix for Model 1 viser en balanceret præcision med 84 korrekte churn-forudsigelser og 111 korrekte fastholdelser i testsættet. Tjek eventuelt også ROC kurven ovenfor, jo tættere den kommer på øverste venstre hjørne jo bedre, og vores ligner en god model men stadig ikke for urealistisk.
+F-measure (0,743): Dette tal er et vægtet gennemsnit, der viser balancen
+mellem præcision og sensitivitet. En værdi på 0,74 bekræfter, at
+modellen er velafbalanceret og ikke "overfitter" til den ene eller den
+anden side.
 
-Fem forskellige klassifikationsmodeller blev testet – herunder Decision Tree, Logistisk Regression, SVM, XGBoost og Random Forest. Generelt fik vi de bedste resultater fra XGBoost og Random Forest, måske fordi de er bedre til at håndtere komplekse datamønstre.  
+Vores confusion matrix for Model 1 viser en balanceret præcision med 84
+korrekte churn-forudsigelser og 111 korrekte fastholdelser i testsættet.
+Tjek eventuelt også ROC kurven ovenfor, jo tættere den kommer på øverste
+venstre hjørne jo bedre, og vores ligner en god model men stadig ikke
+for urealistisk.
+
+Fem forskellige klassifikationsmodeller blev testet – herunder Decision
+Tree, Logistisk Regression, SVM, XGBoost og Random Forest. Generelt fik
+vi de bedste resultater fra XGBoost og Random Forest, måske fordi de er
+bedre til at håndtere komplekse datamønstre.
 
 ### Model 2: Early churn
 
-Model 2 identificerer "early churn" blandt kunder, der fortsætter efter kampagnen, men falder fra inden for 90 dage. 
+Model 2 identificerer "early churn" blandt kunder, der fortsætter efter
+kampagnen, men falder fra inden for 90 dage.
 
-Accuracy (0,837): Modellens overordnede nøjagtighed er på 83,7 %. Det betyder, at den rammer rigtigt i over 8 ud af 10 tilfælde, hvilket gør den til et meget pålideligt værktøj til at forudsige adfærd i den kritiske fase efter en kampagne.  
+Accuracy (0,837): Modellens overordnede nøjagtighed er på 83,7 %. Det
+betyder, at den rammer rigtigt i over 8 ud af 10 tilfælde, hvilket gør
+den til et meget pålideligt værktøj til at forudsige adfærd i den
+kritiske fase efter en kampagne.
 
-ROC-AUC (0,869): Med en AUC-værdi på næsten 0,87 præsterer Model 2 endnu bedre end Model 1 til at adskille potentielle churnere fra loyale kunder. Der er næsten 87 % sandsynlighed for, at en kunde, der faktisk vil forlade os tidligt, får en højere risikoscore end en kunde, der bliver.  
+ROC-AUC (0,869): Med en AUC-værdi på næsten 0,87 præsterer Model 2 endnu
+bedre end Model 1 til at adskille potentielle churnere fra loyale
+kunder. Der er næsten 87 % sandsynlighed for, at en kunde, der faktisk
+vil forlade os tidligt, får en højere risikoscore end en kunde, der
+bliver.
 
-Sensitivitet / Recall (0,950): Dette er modellens stærkeste punkt. Den fanger hele 95 % af alle de faktiske "early churners". Det betyder, at vi næsten med fuld sikkerhed kan identificere de kunder, der er i farezone for at smutte kort efter kampagnens udløb.
+Sensitivitet / Recall (0,950): Dette er modellens stærkeste punkt. Den
+fanger hele 95 % af alle de faktiske "early churners". Det betyder, at
+vi næsten med fuld sikkerhed kan identificere de kunder, der er i
+farezone for at smutte kort efter kampagnens udløb.
 
-Specificitet (0,596): Modellens evne til præcist at identificere loyale kunder er på 59,6 %. Selvom den er lavere end sensitiviteten, prioriterer modellen her bevidst at "fange for mange" frem for at misse en kunde, der er ved at forlade os.  
+Specificitet (0,596): Modellens evne til præcist at identificere loyale
+kunder er på 59,6 %. Selvom den er lavere end sensitiviteten,
+prioriterer modellen her bevidst at "fange for mange" frem for at misse
+en kunde, der er ved at forlade os.
 
-F-measure (0,888): Den høje F-værdi på 0,89 understreger, at modellen er særdeles effektiv til denne specifikke opgave, da den formår at balancere præcision og genfinding på et meget højt niveau.  
+F-measure (0,888): Den høje F-værdi på 0,89 understreger, at modellen er
+særdeles effektiv til denne specifikke opgave, da den formår at
+balancere præcision og genfinding på et meget højt niveau.
 
-Ligesom i model 1 sammenlignede vi de fem modeller, men Random Forest viste de bedste resultater. Det kunne tyde på der er mere komplekse mønstre i vores datasæt
+Ligesom i model 1 sammenlignede vi de fem modeller, men Random Forest
+viste de bedste resultater. Det kunne tyde på der er mere komplekse
+mønstre i vores datasæt
 
 ### Best, average og worst case scenarier
 
-For at vise modellens værdi har vi opstillet tre scenarier, der illustrerer den samlede risiko for en kunde, beregnet som kombinationen af risikoen for umiddelbart churn og early churn.  
+For at vise modellens værdi har vi opstillet tre scenarier, der
+illustrerer den samlede risiko for en kunde, beregnet som kombinationen
+af risikoen for umiddelbart churn og early churn.
 
-Worst Case: En ung bruger (22 år) i segmentet "Mobil-nykommeren" med kun 5 dages aktivitet har en estimeret churn-risiko på hele 99,6 %. Her er behovet for øjeblikkelig intervention kritisk. 
+Worst Case: En ung bruger (22 år) i segmentet "Mobil-nykommeren" med kun
+5 dages aktivitet har en estimeret churn-risiko på hele 99,6 %. Her er
+behovet for øjeblikkelig intervention kritisk.
 
-Average Case: En midaldrende mandlig bruger (45 år), der har været aktiv i over 6 måneder, men har en høj historik af prøveperioder, lander på en moderat risiko på 66,5 %.  
+Average Case: En midaldrende mandlig bruger (45 år), der har været aktiv
+i over 6 måneder, men har en høj historik af prøveperioder, lander på en
+moderat risiko på 66,5 %.
 
-Best Case: En ældre, loyal "Veteran" (70 år) med over 2.000 aktive dage og alle permissions givet har en lav risiko på 33,7 %.  
+Best Case: En ældre, loyal "Veteran" (70 år) med over 2.000 aktive dage
+og alle permissions givet har en lav risiko på 33,7 %.
 
 ## Neural network churn model
 
 Åbn https://colab.research.google.com/, lav "New Notebook" og importer
-JP_NN2.ipynb. Derefter skal subscription_v2.csv og cancellation.csv
-indsættes i Filer under "sample_data". Derefter kan koden køres.
+JP_NeuralNetværk.ipynb. Derefter skal model_data_clean.rds indsættes i
+Filer under "sample_data". Derefter kan koden køres.
 
-Vi har her en rensningsblok og derefter fire modeller der i alt fylder 16000 tegn inkl. mellemrum.
+Vi har her en rensningsblok og derefter fire modeller.
 
-Model 01 fungerer som en baseline og er implementeret som et simpelt neuralt netværk ved brug af Keras Sequential API. I koden ses dette bl.a. ved et enkelt skjult lag (Dense(..., activation='relu')) med L2-regularisering samt et outputlag med sigmoid-aktivering. Modellen kompileres med adam og binary_crossentropy. Formålet er at etablere et sammenligningsgrundlag uden brug af avancerede teknikker.
+Model 01 fungerer som en basislinje og er implementeret som et simpelt
+neuralt netværk ved brug af Keras Sequential API. I koden ses dette
+bl.a. ved et to lag (Dense(..., activation='relu')) med
+L2-regularisering samt et outputlag med sigmoid-aktivering. Modellen
+kompileres med adam og binary_crossentropy. Adam er en effektiv
+optimeringsalgotirtme der anvendes til at opdatere modellens vægte under
+træningen. Binary crossentropy er en loss funktion der er særligt egnet
+til binær klassifikation. Sigmoid aktivering omsætter outputtet til en
+sandsynlighedsværdi mellem 0 og 1.
 
-Model 02 udvider baseline-modellen ved at inkludere flere skjulte lag, eksempelvis Dense(64) og Dense(32), samt BatchNormalization(). Dette øger modellens kapacitet til at lære mere komplekse mønstre i data og bidrager samtidig til en mere stabil træningsproces. Modellen repræsenterer derfor en mere avanceret arkitektur end Model 01.
+Model 02 udvider baseline-modellen ved at inkludere et lag mere
+sammenlignet med model 01, samt BatchNormalization(), og en stærkere l2
+regularizer på 0,002 i stedet for 0,001. En højere L2 regularizer
+betyder at modellen i højere graf straffer store vægte under træningen.
+Dette øger modellens kapacitet til at lære mere komplekse mønstre i data
+og bidrager samtidig til en mere stabil træningsproces. Modellen
+repræsenterer derfor en mere avanceret arkitektur end Model 01.
 
-Model 03 fokuserer på håndtering af ubalancerede data ved brug af SMOTE, hvilket i koden ses ved SMOTE().fit_resample(X_train, y_train). Denne metode skaber et mere balanceret træningsdatasæt ved at generere syntetiske observationer af minoritetsklassen. Selve netværksarkitekturen minder om de tidligere modeller, men træningen foregår på et forbedret datagrundlag, hvilket styrker modellens evne til at identificere churn-kunder.
+Model 03 fokuserer på håndtering af ubalancerede data ved brug af SMOTE,
+hvilket i koden ses ved SMOTE().fit_resample(X_train, y_train). Denne
+metode skaber et mere balanceret træningsdatasæt ved at generere
+syntetiske observationer af minoritetsklassen. Selve
+netværksarkitekturen minder om de tidligere modeller, men træningen
+foregår på et forbedret datagrundlag, hvilket styrker modellens evne til
+at identificere churn-kunder.
 
-Model 04 anvender SMOTENC (SMOTENC(categorical_features=...)) som oversampling-teknik. Denne metode tager højde for både numeriske og kategoriske variabler og skaber dermed mere realistiske syntetiske observationer sammenlignet med standard SMOTE. Modellen kombinerer derfor en neural netværksarkitektur med en mere avanceret tilgang til håndtering af datasæt-ubalance.
+Model 04 anvender SMOTENC (SMOTENC(categorical_features=...)) som
+oversampling-teknik. Denne metode tager højde for både numeriske og
+kategoriske variabler og skaber dermed mere realistiske syntetiske
+observationer sammenlignet med standard SMOTE. Modellen kombinerer
+derfor en neural netværksarkitektur med en mere avanceret tilgang til
+håndtering af datasæt-ubalance.
 
-Til sidst vurderes modellerne samlet ved hjælp af ROC-kurver, confusion matrices og centrale performance-mål såsom AUC, recall og accuracy.
+Til sidst vurderes modellerne samlet ved hjælp af ROC-kurver, confusion
+matrices og centrale performance-mål såsom AUC, recall og accuracy.
 
-Resultaterne viser, at Model 04 (SMOTENC) opnår den bedste samlede performance med den højeste AUC på 0,792 samt den højeste recall på 0,783. Det betyder, at modellen er bedst til at identificere churn-kunder, hvilket ofte er det vigtigste mål i churn-prediktion, da det er mere værdifuldt at fange flest mulige potentielle kunder, der risikerer at forlade virksomheden.
+Resultaterne viser, at Model 04 (SMOTENC) opnår den bedste samlede
+performance med den højeste AUC på 0,792 samt den højeste recall på
+0,783. Det betyder, at modellen er bedst til at identificere
+churn-kunder, hvilket ofte er det vigtigste mål i churn-prediktion, da
+det er mere værdifuldt at fange flest mulige potentielle kunder, der
+risikerer at forlade virksomheden.
 
-Model 01 (Baseline) præsterer overraskende stærkt med en AUC på 0,779 og den højeste accuracy på 0,694, hvilket indikerer, at den simple model fortsat er konkurrencedygtig. Model 03 (SMOTE) opnår samme AUC på 0,779, men en højere recall på 0,755, hvilket viser, at SMOTE forbedrer modellens evne til at identificere churn-kunder på bekostning af en mindre reduktion i accuracy.
+Model 01 (Basislinje) præsterer overraskende stærkt med en AUC på 0,779
+og den højeste accuracy på 0,694, hvilket indikerer, at den simple model
+fortsat er konkurrencedygtig. Model 03 (SMOTE) opnår samme AUC på 0,779,
+men en højere recall på 0,755, hvilket viser, at SMOTE forbedrer
+modellens evne til at identificere churn-kunder på bekostning af en
+mindre reduktion i accuracy.
 
-Model 02 (Complex) opnår de svageste resultater med en AUC på 0,759 og en recall på 0,613, hvilket tyder på, at øget modelkompleksitet alene ikke nødvendigvis fører til bedre performance. Tværtimod peger resultaterne på, at håndtering af datasæt-ubalance har større betydning end en mere kompleks netværksarkitektur.
+Model 02 (Complex) opnår de svageste resultater med en AUC på 0,759 og
+en recall på 0,613, hvilket tyder på, at øget modelkompleksitet alene
+ikke nødvendigvis fører til bedre performance. Tværtimod peger
+resultaterne på, at håndtering af datasæt-ubalance har større betydning
+end en mere kompleks netværksarkitektur.
 
-Samlet set fremstår Model 04 (SMOTENC) som den stærkeste model, da den både leverer den bedste samlede diskriminationsevne (AUC) og den højeste recall. Resultaterne understreger dermed, at avancerede metoder til håndtering af ubalancerede data kan have en væsentlig positiv effekt på churn-prediktion.
+Samlet set fremstår Model 04 (SMOTENC) som den stærkeste model, da den
+både leverer den bedste samlede diskriminationsevne (AUC) og den højeste
+recall. Resultaterne understreger dermed, at avancerede metoder til
+håndtering af ubalancerede data kan have en væsentlig positiv effekt på
+churn-prediktion.
+
+# Fejlkilder og fortolkning
+
+En væsentlig metodisk udfordring i analysen er risikoen for data leakage
+(lækkage af fremtidig information), særligt i variablen
+account_active_days, som er defineret som det samlede antal dage, en
+kunde har haft adgang gennem et aktivt JP-abonnement. Denne variabel er
+meget stærkt forklarende i modellen, men værdien er opgjort på
+tidspunktet for dataudtrækket og kan derfor indeholde information om
+kundens adfærd efter det tidspunkt, hvor churn-prediktionen i praksis
+skulle foretages. Modellen kan dermed indirekte få adgang til fremtidig
+information, hvilket kan føre til overvurdering af modellens præcision.
+
+Vi har forsøgt, men ikke implementeret, at korrigere for dette ved at
+rekonstruere historiske værdier for account_active_days,
+previous_trials, previous_subscriptions og previous_campaigns, så disse
+i højere grad afspejlede den information, der reelt var tilgængelig på
+predictionstidspunktet. Dette viste sig imidlertid metodisk
+problematisk, da datasættet ikke indeholder tilstrækkelig historik til
+præcist at tilbagedatere disse variabler.
+
+For at kunne rekonstruere historiske værdier korrekt, ville det blandt
+andet kræve mere detaljeret information om:
+
+-   start- og slutdatoer for hver abonnementsperiode
+-   eventuelle pauser eller midlertidige ophold i abonnementet
+-   fornyelsesdatoer og abonnementsændringer
+-   præcise datoer for prøveperioder og tidligere kampagner
+-   hvornår tidligere abonnementer blev oprettet og afsluttet
+
+Da disse oplysninger ikke er tilgængelige i datagrundlaget, vil en
+tilbagedatering nødvendigvis bygge på antagelser, som kan introducere
+nye fejl og potentielt forvrænge de oprindelige variabler. På den
+baggrund har vi vurderet, at en fuld historisk rekonstruktion ikke kan
+gennemføres på et fagligt forsvarligt grundlag med det nuværende
+datasæt.
+
+Dette betyder, at modellen sandsynligvis overvurderer betydningen af
+enkelte variable, særligt account_active_days, og at modellens
+prædiktive performance derfor bør fortolkes med forsigtighed.
+Resultaterne giver stadig værdifuld indsigt i, hvilke
+kundekarakteristika der ser ud til at hænge sammen med churn, men
+modellens præcision vil forventeligt være lavere i en reel
+produktionssituation, hvor kun historisk tilgængelig information kan
+anvendes.
+
+# Konklusion
+
+Projektet viser, at det er muligt at forudsige churn blandt kampagneabonnenter ved hjælp af Machine Learning med en relativt høj præcision, særligt ved brug af modeller som Random Forest og XGBoost.
+
+En central begrænsning er risikoen for data leakage, især i variabler som account_active_days, som kan indeholde information, der ikke reelt ville være tilgængelig på tidspunktet for en faktisk churn-prediktion. Dette betyder, at modellernes performance sandsynligvis er overvurderet, og at resultaterne skal tolkes med forsigtighed i en reel implementeringskontekst.
+
+Udover det viser resultaterne, at især kundeadfærd og historik er centrale faktorer for churn. Modeller som Random Forest og XGBoost klarer sig som sagt bedst, og early churn-modellen er særligt stærk til at fange kunder i risikogruppen. Det neurale netværk er knap så godt i sammenligning, blandt andet fordi datamængden er relativt lille.
+
+Kombinationen af ML-modeller, klyngeanalyse og et interaktivt dashboard giver Jyllands-Posten et brugbart værktøj til at identificere risikokunder, forstå kundemønstre og målrette fastholdelsesindsatser mere effektivt.
+
+Samlet set kan metoden bidrage til lavere churn og mere datadrevne kampagne- og fastholdelsesstrategier.
+
+# Bilag 1 - Klyngeanalyse illustrationer {#app-bilag1}
+
+```{r Bilag 1 - klyngeanalyse illustrationer}
+
+plot_histogram(cluster_input)
+
+summary(pca)
+
+screeplot(pca, type = "line")
+abline(h = 1, col = "red", lty = 3)
+
+biplot(pca, scale = 0)
+
+plot(hc_ward)
+
+# Visualisering
+ggboxplot(customer_df, x = "cluster_km", y = "n_visits",
+          color = "cluster_km")
+
+ggboxplot(customer_df, x = "cluster_km", y = "avg_scroll",
+          color = "cluster_km")
+
+ggboxplot(customer_df, x = "cluster_km", y = "account_active_days",
+          color = "cluster_km")
+
+ggboxplot(customer_df, x = "cluster_km", y = "previous_subscriptions",
+          color = "cluster_km")
+
+# ANOVA tests
+summary(aov(n_visits ~ cluster_km, data = customer_df))
+summary(aov(avg_scroll ~ cluster_km, data = customer_df))
+
+summary(aov(account_active_days ~ cluster_km, data = customer_df))
+summary(aov(previous_subscriptions ~ cluster_km, data = customer_df))
+summary(aov(previous_campaigns ~ cluster_km, data = customer_df))
+summary(aov(previous_trials ~ cluster_km, data = customer_df))
+summary(aov(newsletters_before_order ~ cluster_km, data = customer_df))
+summary(aov(newsletters_after_order ~ cluster_km, data = customer_df))
+
+```
+
+# Bilag 2 - Power BI Præsentation
+
+For at få R script til at fungere, skal filstien ændres til din lokale computer.
+readRDS("C:\\Users\\painb\\Desktop\\2ndsemester-JPcase\\data\\churn_model_rf.rds")
+
+
+# Kildeliste
+
+Chatgpt GPT-5.3, Claude Opus 4.7 og Google Gemini 3 er brugt som hjælpemiddel og idégenerering til kodning
+
